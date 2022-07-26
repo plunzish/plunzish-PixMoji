@@ -3,7 +3,7 @@
 <h1 align="center">
   <img src="https://i.imgur.com/c3B5oup.png" width="340" height="131" style="border-radius: 50%;"/>
   <br />
-  Modern pixel art emojis, free to use for everyone. Just clone repo, or download as zip.
+  Modern pixel art emojis, free to use for everyone. Just clone repository, or download as zip.
 </h1>
 
 > Info: This project may, or may not be continued after all smiley emojis are finished.
