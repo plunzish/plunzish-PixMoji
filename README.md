@@ -12,3 +12,15 @@
 
 This is a free to use pixel art emoji collection.
 Fell free to download your copy now.
+
+## Committers and Contributors
+
+* Plunzi (me)
+
+## License
+
+Copyright 2019 Twitter, Inc and other contributors
+
+Code licensed under the MIT License: <http://opensource.org/licenses/MIT>
+
+Graphics licensed under CC-BY 4.0: <https://creativecommons.org/licenses/by/4.0/>
