@@ -19,7 +19,7 @@ Fell free to download your copy now.
 
 ## License
 
-Copyright 2019 Twitter, Inc and other contributors
+Copyright 2022 Plunzish Studios
 
 Code licensed under the MIT License: <http://opensource.org/licenses/MIT>
 
