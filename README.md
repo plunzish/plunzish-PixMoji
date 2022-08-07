@@ -15,7 +15,8 @@ Fell free to download your copy now.
 
 ## Committers and Contributors
 
-* Plunzi (me)
+* Monsbot
+* Plunzi
 
 ## License
 
