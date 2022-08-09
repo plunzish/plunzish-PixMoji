@@ -25,18 +25,6 @@ public class ChatListener implements Listener {
         TextComponent messageComponent = Component.text("<" + player.getName() + "> ");
 
         TextComponent emojiComponent;
-
-        if(message.length() == 1 && PlunziChatPlugin.pixmojis.isInList(message.charAt(0))) {
-            messageComponent = messageComponent.style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build());
-
-            emojiComponent = Component.text(message + "\n").style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build());
-            messageComponent = emojiComponent.append(Component.text("<" + player.getName() + ">\n").style(Style.style().font(Key.key("minecraft","default")).build()));
-            messageComponent = messageComponent.append(Component.text("<" + player.getName() + ">").style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()));
-
-            player.sendMessage(messageComponent);
-            return;
-        }
-
         TextComponent textComponent;
 
         for (int i = 0; i < splitMessage.length; i++) {
@@ -44,32 +32,47 @@ public class ChatListener implements Listener {
 
             Pixmoji pixmoji = PlunziChatPlugin.pixmojis.getByName(element);
 
-            if(pixmoji != null) {
+            if(pixmoji != PlunziChatPlugin.pixmojis.nullmoji) {
+
                 emojiComponent = Component.text(pixmoji.getUnicodeChar() + "");
                 emojiComponent = emojiComponent.style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT).build());
 
                 messageComponent = messageComponent.append(emojiComponent);
-
             } else {
-
                 textComponent = Component.text(element);
 
                 if(shouldGetColon(i, message)) {
                     textComponent = textComponent.append(Component.text(":"));
                 }
 
-
-                textComponent.style().font(Key.key("minecraft", "default"));
-
                 textComponent = textComponent.style(Style.style().font(Key.key("minecraft", "default")).build());
-
 
                 messageComponent = messageComponent.append(textComponent);
             }
         }
 
-        player.sendMessage(messageComponent);
+        message = PlainTextComponentSerializer.plainText().serialize(messageComponent);
+        message = message.replace("<" + player.getName() + "> ", "");
+        Pixmoji pixmoji = PlunziChatPlugin.pixmojis.getByChar(message.charAt(0));
 
+        if(pixmoji != PlunziChatPlugin.pixmojis.nullmoji) {
+
+            messageComponent = null;
+            messageComponent = Component.text("<" + player.getName() + "> " )
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build());
+
+            messageComponent = messageComponent.append(Component.text(pixmoji.getUnicodeChar() + "\n")
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build()));
+
+            messageComponent = messageComponent.append(Component.text("<" + player.getName() + ">\n" )
+                    .style(Style.style().font(Key.key("minecraft", "default")).build()));
+
+            messageComponent = messageComponent.append(Component.text("<" + player.getName() + ">" )
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()));
+        }
+
+
+        player.sendMessage(messageComponent);
     }
 
     private boolean shouldGetColon(int i, String message) {

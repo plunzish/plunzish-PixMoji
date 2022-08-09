@@ -6,6 +6,8 @@ import java.util.List;
 public class Pixmojis {
     public List<Pixmoji> pixmojiList = new ArrayList<>();
 
+    public Pixmoji nullmoji = new Pixmoji("null", '\uE000');
+
     public Pixmojis() {
         pixmojiList.add(new Pixmoji("angryDevil", '\uE001'));
         pixmojiList.add(new Pixmoji("happy1", '\uE002'));
@@ -65,14 +67,23 @@ public class Pixmojis {
     public Pixmoji getByName(String name) {
 
         for(Pixmoji pixmoji : pixmojiList) {
-
             if (name.equals(pixmoji.getName())) {
                 return pixmoji;
             }
-
         }
 
-        return null;
+        return nullmoji;
+    }
+
+    public Pixmoji getByChar(char unicodeChar) {
+
+        for(Pixmoji pixmoji : pixmojiList) {
+            if (unicodeChar == pixmoji.getUnicodeChar()) {
+                return pixmoji;
+            }
+        }
+
+        return nullmoji;
     }
 
     public boolean isInList(String name) {

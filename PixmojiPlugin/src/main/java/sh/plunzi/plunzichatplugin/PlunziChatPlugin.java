@@ -12,6 +12,7 @@ public final class PlunziChatPlugin extends JavaPlugin {
 
     public static Pixmojis pixmojis = new Pixmojis();
     public static String PLUNZISH_NAMESPACE = "plunzish";
+
     public static Key PIXMOJI_FONT = Key.key(PLUNZISH_NAMESPACE, "pixmojis");
     public static Key PIXMOJI_FONT_LARGE = Key.key(PLUNZISH_NAMESPACE, "pixmojis_large");
     public static Key PIXMOJI_FONT_TRANSPARENT = Key.key(PLUNZISH_NAMESPACE, "transparent");
