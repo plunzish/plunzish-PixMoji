@@ -4,3 +4,7 @@ main: sh.plunzi.plunzichatplugin.PlunziChatPlugin
 api-version: 1.18
 authors: [ Monsbot ]
 description: The chat plugin for the Plunzish Minecraft server (enables use of Pixmojis)
+commands:
+  msg:
+    description: Privately Message a player
+    aliases: [ w, tell ]
