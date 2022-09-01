@@ -1,7 +1,7 @@
 # opensource-pixel-art-emojis
 
 <h1 align="center">
-  <img src="https://i.imgur.com/c3B5oup.png" width="340" height="131" style="border-radius: 50%;"/>
+  <img src="https://i.imgur.com/RhxDywI.png" width="340" height="131" style="border-radius: 50%;"/>
   <br />
   Modern pixel art emojis, free to use for everyone. Just clone repository, or download as zip.
 </h1>
