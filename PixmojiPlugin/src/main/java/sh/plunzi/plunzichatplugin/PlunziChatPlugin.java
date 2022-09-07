@@ -5,18 +5,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
-import sh.plunzi.plunzichatplugin.commands.PrivateMessageCommand;
-import sh.plunzi.plunzichatplugin.fileUtils.FileManager;
+import sh.plunzi.plunzichatplugin.commands.*;
+import sh.plunzi.plunzichatplugin.dataUtils.DatabaseManager;
+import sh.plunzi.plunzichatplugin.dataUtils.FileManager;
 import sh.plunzi.plunzichatplugin.listeners.ChatListener;
 import sh.plunzi.plunzichatplugin.listeners.JoinListener;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmojis;
 
 public final class PlunziChatPlugin extends JavaPlugin {
 
-    public static final Pixmojis PIXMOJIS = new Pixmojis();
-    public static final ChatHandler CHAT_HANDLER = new ChatHandler();
-    public static final String PLUNZISH_NAMESPACE = "plunzish";
+    public static Pixmojis PIXMOJIS;
+    public static ChatHandler CHAT_HANDLER;
     public static FileManager FILE_MANAGER;
+    public static DatabaseManager DATABASE_MANAGER;
+    public static String PLUNZISH_NAMESPACE = "plunzish";
 
     public static final Key PIXMOJI_FONT = Key.key(PLUNZISH_NAMESPACE, "pixmojis");
     public static final Key PIXMOJI_FONT_LARGE = Key.key(PLUNZISH_NAMESPACE, "pixmojis_large");
@@ -31,22 +33,47 @@ public final class PlunziChatPlugin extends JavaPlugin {
     }
 
     //THE LIST OF WHAT I NEED TO DO
+    //✅ Pings
+    //- Pingsound
     //
-    //TODO Set up databse:
-    //  - for censoring level
-    //  - for admins
+    //✅ Nachrichten ^_^
+    //✅ dms
     //
-    //TODO Dm feature
+    //TODO * + ,
+    //
+    //TODO Broadcast
+    //
+    //TODO Database <-
+    //
+    //TODO Friend system
+    // - Friend broadcast
+    // - responde /r
+    // - accept all
+    // - decline all
+    // - lock
+    //
+    //TODO Partysystem
+    // - Partychat
+    //TODO Formatting
 
 
     private void register() {
         FILE_MANAGER = new FileManager();
+        PIXMOJIS = new Pixmojis();
+        CHAT_HANDLER = new ChatHandler();
+        DATABASE_MANAGER = new DatabaseManager();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new ChatListener(), this);
         pluginManager.registerEvents(new JoinListener(), this);
 
         Bukkit.getPluginCommand("msg").setExecutor(new PrivateMessageCommand());
+        Bukkit.getPluginCommand("setcensor").setExecutor(new SetCensorlevelCommand());
+        Bukkit.getPluginCommand("debug").setExecutor(new DebuggingCommand());
+        Bukkit.getPluginCommand("op").setExecutor(new OpCommand());
+        Bukkit.getPluginCommand("deop").setExecutor(new DeopCommand());
+        Bukkit.getPluginCommand("clearmydata").setExecutor(new ClearDataCommand());
+        Bukkit.getPluginCommand("broadcast").setExecutor(new BroadcastCommand());
     }
 
     @Override
