@@ -1,0 +1,15 @@
+{
+
+	"chat.ping": {
+	"sounds": [
+      {
+        "name": "plunzish:chat/ping",
+				"weight": 10
+      },
+			{
+        "name": "plunzish:chat/bruh"
+      }
+    ]
+  }
+
+}
