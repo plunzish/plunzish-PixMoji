@@ -16,6 +16,7 @@ public class DebuggingCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
+        OtherUtils utils = PlunziChatPlugin.UTILS;
         if(args.length < 3) {
             chatHandler.sendCommandFeedback("no. /debug <color1> <color2> <message>. Colors as these: #ffee99", false, sender);
             return false;
@@ -45,7 +46,7 @@ public class DebuggingCommand implements CommandExecutor {
         }
         System.out.println(message);
 
-        chatHandler.sendCommandFeedback(OtherUtils.buildComponent(message.toString(), color1, color2), true, sender);
+        chatHandler.sendCommandFeedback(utils.buildComponent(message.toString(), color1, color2), true, sender);
         return true;
     }
 }

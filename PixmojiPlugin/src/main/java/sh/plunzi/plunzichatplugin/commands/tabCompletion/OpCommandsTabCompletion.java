@@ -15,15 +15,22 @@ import java.util.List;
 public class OpCommandsTabCompletion implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if(args.length ==  1) {
-            ArrayList<String> availableArgs1 = new ArrayList<>();
+        if(args.length ==  1 && sender.isOp()) {
+            ArrayList<String> availableArgs2 = new ArrayList<>();
 
             for(Player player : Bukkit.getOnlinePlayers()) {
-                if(!player.getName().equals(sender.getName())) {
-                    availableArgs1.add(player.getName());
+
+                if(args[0].endsWith(",")) {
+
+                    if(!player.getName().equals(sender.getName())) {
+                        availableArgs2.add(args[0] + player.getName());
+                    }
+
+                } else if(!player.getName().equals(sender.getName())) {
+                    availableArgs2.add(player.getName());
                 }
             }
-            return availableArgs1;
+            return availableArgs2;
         }
 
         return Collections.emptyList();

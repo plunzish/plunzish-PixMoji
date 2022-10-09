@@ -1,0 +1,2 @@
+python createURLFromGitConfig.py .
+pause

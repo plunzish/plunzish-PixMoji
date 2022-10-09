@@ -29,7 +29,14 @@ public class FriendsTabCompletion implements TabCompleter {
             ArrayList<String> availableArgs2 = new ArrayList<>();
 
             for(Player player : Bukkit.getOnlinePlayers()) {
-                if(!player.getName().equals(sender.getName())) {
+
+                if(args[1].endsWith(",")) {
+
+                    if(!player.getName().equals(sender.getName())) {
+                        availableArgs2.add(args[1] + player.getName());
+                    }
+
+                } else if(!player.getName().equals(sender.getName())) {
                     availableArgs2.add(player.getName());
                 }
             }

@@ -15,11 +15,13 @@ import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 import sh.plunzi.plunzichatplugin.utils.DatabaseManager;
 import sh.plunzi.plunzichatplugin.utils.OtherUtils;
+import sh.plunzi.plunzichatplugin.utils.PlayerNonExistendException;
 
 import java.util.*;
 
 public class FriendsCommand implements CommandExecutor {
     ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
+    OtherUtils utils = PlunziChatPlugin.UTILS;
     DatabaseManager databaseManager = PlunziChatPlugin.DATABASE_MANAGER;
     HashMap<Player,List<Player>> playerPlayerHashMap = new HashMap<>();
 
@@ -60,61 +62,59 @@ public class FriendsCommand implements CommandExecutor {
         } else {
 
             if(args.length < 2) {
-                chatHandler.sendCommandFeedback("You must provide a player", true, sender);
+                chatHandler.sendCommandFeedback("You must provide one or more players", true, sender);
                 return false;
             }
 
-            Player target = null;
-            for(Player pl : Bukkit.getOnlinePlayers()) {
-                if(args[1].equals(pl.getName())) target = pl;
-            }
-            if(target == null) {
-                chatHandler.sendCommandFeedback("Can't find player: " + args[1], true, sender);
-                return false;
-            }
-            if(target == player) {
-                chatHandler.sendCommandFeedback("You can't (un)friend yourself", true, sender);
-                if(databaseManager.getFriends(playerUUID).isEmpty()) chatHandler.sendCommandFeedback("Also I'm sorry that you are that lonely", false, sender);
-
-                return false;
-            }
-
-            switch (args[0]) {
-                case "add":
-
-                    if (databaseManager.getFriends(playerUUID).contains(target)) {
-                        chatHandler.sendCommandFeedback("You're already friends with this player!", true, sender);
-                        return false;
-                    }
-                    sendFriendRequest(player, target);
-
-                    break;
-                case "remove":
-
-                    if (!databaseManager.getFriends(playerUUID).contains(target)) {
-
-                        if(entryExists(target, player) || entryExists(player, target)) {
-                            removeBothEntries(player, target);
-                            chatHandler.sendCommandFeedback("Rejected " + target.getName() + "s friend request", false, sender);
-                            chatHandler.sendCommandFeedback(player.getName() + " rejected your friend request", false, target);
-                            return true;
-                        }
-                        chatHandler.sendCommandFeedback("You're not friends with this player!", true, sender);
-                        return false;
-                    }
-                    removeBothEntries(player, target);
-                    databaseManager.removeFriend(player.getUniqueId(), target.getUniqueId());
-                    databaseManager.removeFriend(target.getUniqueId(), player.getUniqueId());
-                    chatHandler.sendCommandFeedback("You're no longer friends with " + target.getName() + ".", false, sender);
-
-                    break;
-                default:
-                    chatHandler.sendCommandFeedback("Invalid Syntax, use /friends ([add/remove] <player>)", true, sender);
-                    return false;
+            for (Player target : PlunziChatPlugin.UTILS.stringToPlayers(args[1], sender, true)) {
+                performFriendsCommand(args, player, target);
             }
 
         }
         return true;
+    }
+
+    private void performFriendsCommand(String[] args, Player player, Player target) {
+        UUID playerUUID = player.getUniqueId();
+
+        if(target == player) {
+            chatHandler.sendCommandFeedback(target.getName() + "> You can't (un)friend yourself", true, player);
+            if(databaseManager.getFriends(playerUUID).isEmpty()) chatHandler.sendCommandFeedback("(Also I'm sorry that you are lonely)", false, player);
+            return;
+        }
+
+        switch (args[0]) {
+            case "add":
+
+                if (databaseManager.getFriends(playerUUID).contains(target)) {
+                    chatHandler.sendCommandFeedback(target.getName() + "> You're already friends with this player!", true, player);
+                    return;
+                }
+                sendFriendRequest(player, target);
+
+                break;
+            case "remove":
+
+                if (!databaseManager.getFriends(playerUUID).contains(target)) {
+
+                    if(entryExists(target, player) || entryExists(player, target)) {
+                        removeBothEntries(player, target);
+                        chatHandler.sendCommandFeedback("Rejected " + target.getName() + "s friend request", false, player);
+                        chatHandler.sendCommandFeedback(player.getName() + " rejected your friend request", false, target);
+                        return;
+                    }
+                    chatHandler.sendCommandFeedback("You're not friends with this player!", true, player);
+                    return;
+                }
+                removeBothEntries(player, target);
+                databaseManager.removeFriend(player.getUniqueId(), target.getUniqueId());
+                databaseManager.removeFriend(target.getUniqueId(), player.getUniqueId());
+                chatHandler.sendCommandFeedback("You're no longer friends with " + target.getName() + ".", false, player);
+
+                break;
+            default:
+                chatHandler.sendCommandFeedback("Invalid Syntax, use /friends ([add/remove] <player>)", true, player);
+        }
     }
 
     private void sendFriendRequest(Player player, Player target) {
@@ -136,15 +136,15 @@ public class FriendsCommand implements CommandExecutor {
             }
             return;
         }
-        chatHandler.sendCommandFeedback("Friend request sent! (they have 2 minutes to accept)", false, player);
+        chatHandler.sendCommandFeedback("Friend request sent to" + target.getName() + " ! (they have 2 minutes to accept)", false, player);
         chatHandler.sendCommandFeedback(Component.text(player.getName() + " sent you a friend Request (you have 2 minutes to accept)")
-                .append(Component.text(" "))
+                .append(Component.text("\n"))
                 .append(
-                        OtherUtils.buildComponent("[Accept]", Color.fromRGB(0x00ff0c), Color.fromRGB(0x008831))
+                        utils.buildComponent("[Accept]", Color.fromRGB(0x00ff0c), Color.fromRGB(0x008831))
                         .clickEvent(ClickEvent.runCommand("/friends add " + player.getName()))
                 ).append(Component.text(" "))
                 .append(
-                        OtherUtils.buildComponent("[Reject]", Color.fromRGB(0xff5252), Color.fromRGB(0xad0000)))
+                        utils.buildComponent("[Reject]", Color.fromRGB(0xff5252), Color.fromRGB(0xad0000)))
                         .clickEvent(ClickEvent.runCommand("/friends remove " + player.getName())
                 )
                 , false, target);

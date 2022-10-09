@@ -9,6 +9,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
+import sh.plunzi.plunzichatplugin.utils.PlayerNonExistendException;
+
+import java.util.List;
 
 public class OpCommand implements CommandExecutor {
     ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
@@ -21,22 +24,27 @@ public class OpCommand implements CommandExecutor {
         }
 
         if(args.length != 1) {
-            chatHandler.sendCommandFeedback("Wrong syntax, use like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player>", true, sender);
+            chatHandler.sendCommandFeedback("Wrong syntax, use like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player|player1,player2>", true, sender);
             return false;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
-
-        if(target!=null) {
-            target.setOp(true);
-            target.sendMessage("§7§oyou're now a server operator");
-            PlunziChatPlugin.DATABASE_MANAGER.setAdmin(target.getUniqueId(), true);
-            sender.sendMessage("§a" + target.getName() + " is now a Server Operator");
-        } else {
-            sender.sendMessage("§cPlayer not found");
-            return false;
+        List<Player> targets = PlunziChatPlugin.UTILS.stringToPlayers(args[0], sender, true);
+        for(Player target : targets) {
+            setOp(target, sender);
         }
-
         return true;
+    }
+
+    private void setOp(Player target, CommandSender sender) {
+        if(target!= null) {
+            if(!target.isOp()) {
+                target.setOp(true);
+                target.sendMessage("§7§oyou're now a server operator");
+                PlunziChatPlugin.DATABASE_MANAGER.setAdmin(target.getUniqueId(), true);
+                chatHandler.sendCommandFeedback("§a" + target.getName() + " is now a server operator", false, sender);
+                return;
+            }
+            chatHandler.sendCommandFeedback(target.getName() + " is already a server operator", true, sender);
+        }
     }
 }

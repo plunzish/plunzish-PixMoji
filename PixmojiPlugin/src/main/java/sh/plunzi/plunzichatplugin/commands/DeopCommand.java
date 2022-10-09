@@ -1,11 +1,5 @@
 package sh.plunzi.plunzichatplugin.commands;
 
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import net.kyori.adventure.util.HSVLike;
-import org.bukkit.Bukkit;
-import org.bukkit.Color;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +8,8 @@ import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 import sh.plunzi.plunzichatplugin.chatSending.messages.Message;
+
+import java.util.List;
 
 public class DeopCommand implements CommandExecutor {
 
@@ -26,28 +22,28 @@ public class DeopCommand implements CommandExecutor {
             return false;
         }
 
-        if(args.length !=  1) {
-            chatHandler.sendCommandFeedback("Wrong syntax, use like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player>", true, sender);
+        if(args.length != 1) {
+            chatHandler.sendCommandFeedback("Wrong syntax, use like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player|player1,player2>", true, sender);
             return false;
         }
 
-        Player target = Bukkit.getPlayer(args[0]);
-
-        if(target !=  null) {
-            target.setOp(false);
-            target.sendMessage(
-                    PlunziChatPlugin.PREFIX.append(
-                    Component.text("you're no longer a server operator")
-                    .color(TextColor.color(HSVLike.fromRGB(Color.GRAY.getRed(), Color.GRAY.getBlue(), Color.GRAY.getGreen())))
-                    .decoration(TextDecoration.ITALIC, true)));
-
-            PlunziChatPlugin.DATABASE_MANAGER.setAdmin(target.getUniqueId(), false);
-            chatHandler.sendCommandFeedback(target.getName() + " is no longer a Server Operator", false, sender);
-        } else {
-            chatHandler.sendCommandFeedback("Player not found", true, sender);
-            return false;
+        List<Player> targets = PlunziChatPlugin.UTILS.stringToPlayers(args[0], sender, true);
+        for(Player target : targets) {
+            setDeop(target, sender);
         }
-
         return true;
+    }
+
+    private void setDeop(Player target, CommandSender sender) {
+        if(target!= null) {
+            if(target.isOp()) {
+                target.setOp(false);
+                target.sendMessage("§7§oyou're no longer a server operator");
+                PlunziChatPlugin.DATABASE_MANAGER.setAdmin(target.getUniqueId(), true);
+                chatHandler.sendCommandFeedback("§a" + target.getName() + " is no longer a server operator", false, sender);
+                return;
+            }
+            chatHandler.sendCommandFeedback(target.getName() + " is not a server operator", true, sender);
+        }
     }
 }

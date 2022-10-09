@@ -24,6 +24,7 @@ public final class PlunziChatPlugin extends JavaPlugin {
     public static ChatHandler CHAT_HANDLER;
     public static FileManager FILE_MANAGER;
     public static DatabaseManager DATABASE_MANAGER;
+    public static OtherUtils UTILS;
     public static PlunziChatPlugin INSTANCE;
     public static String PLUNZISH_NAMESPACE = "plunzish";
 
@@ -40,21 +41,12 @@ public final class PlunziChatPlugin extends JavaPlugin {
         register();
         Bukkit.getConsoleSender().sendMessage("\u00a76Pixmoji Plugin loaded \u00a7a:" + PIXMOJIS.getRandom().getName() + ":");
 
-        PREFIX = OtherUtils.buildComponent("[Plunzish]", Color.fromRGB(0xffc400), Color.fromRGB(0xae00d9));
+        PREFIX = UTILS.buildComponent("[Plunzish]", Color.fromRGB(0xffc400), Color.fromRGB(0xae00d9));
         PREFIX = PREFIX.append(Component.text(" ").color(TextColor.color(0x666666)));
     }
 
 
     //THE LIST OF WHAT I NEED TO DO
-    //✅ Pings
-    //✅ Pingsound
-    //
-    //✅ Nachrichten ^_^
-    //✅ dms
-    //
-    //TODO * + ,
-    //
-    //TODO Broadcast
     //
     //TODO Database <-
     //
@@ -71,6 +63,7 @@ public final class PlunziChatPlugin extends JavaPlugin {
         PIXMOJIS = new Pixmojis();
         CHAT_HANDLER = new ChatHandler();
         DATABASE_MANAGER = new DatabaseManager();
+        UTILS = new OtherUtils();
         INSTANCE = this;
 
         PluginManager pluginManager = Bukkit.getPluginManager();
