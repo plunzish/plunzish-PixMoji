@@ -1,6 +1,5 @@
 package sh.plunzi.plunzichatplugin.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,9 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
-import sh.plunzi.plunzichatplugin.dataUtils.DatabaseManager;
-
-import java.util.Arrays;
+import sh.plunzi.plunzichatplugin.utils.DatabaseManager;
 
 public class BroadcastCommand implements CommandExecutor {
     @Override
@@ -20,13 +17,13 @@ public class BroadcastCommand implements CommandExecutor {
 
         if(sender instanceof Player) {
             if(!databaseManager.isPlayerAdmin(((Player) sender).getUniqueId())) {
-                sender.sendMessage("§cYou can't do that");
+                chatHandler.sendCommandFeedback("You can't do that", true, sender);
                 return false;
             }
         }
 
         if(args.length < 1) {
-            sender.sendMessage("\u00a7cNot enough arguments, you can't just broadcast nothing");
+            chatHandler.sendCommandFeedback("Not enough arguments, you can't just broadcast nothing", true, sender);
             return false;
         }
 

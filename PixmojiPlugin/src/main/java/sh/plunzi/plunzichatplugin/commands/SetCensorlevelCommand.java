@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.messages.Censorship;
-import sh.plunzi.plunzichatplugin.dataUtils.DatabaseManager;
+import sh.plunzi.plunzichatplugin.utils.DatabaseManager;
 
 public class SetCensorlevelCommand implements CommandExecutor {
 

@@ -68,7 +68,7 @@ public class Pixmojis {
     public Pixmoji getPixmoji(String name) {
 
         for(Pixmoji pixmoji : pixmojiList) {
-            if (name.equals(pixmoji.getName())) {
+            if (name.toLowerCase().equals(pixmoji.getName().toLowerCase())) {
                 return pixmoji;
             }
         }

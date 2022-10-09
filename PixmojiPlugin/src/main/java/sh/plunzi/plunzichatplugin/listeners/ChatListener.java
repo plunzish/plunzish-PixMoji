@@ -10,7 +10,6 @@ import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 
 public class ChatListener implements Listener {
 
-    ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
 
     @EventHandler
     public void playerChatEvent(AsyncChatEvent event) {
@@ -19,7 +18,7 @@ public class ChatListener implements Listener {
         event.setCancelled(true); //lol fuck Mojangs chat reporting :P   We do our own chat reporting and we do it better ÙwÚ
         String messageContent = PlainTextComponentSerializer.plainText().serialize(event.message());
 
-        chatHandler.sendMessage(messageContent, player);
+        PlunziChatPlugin.CHAT_HANDLER.sendMessage(messageContent, player);
     }
 
 }

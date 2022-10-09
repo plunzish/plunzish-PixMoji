@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
+import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -18,11 +19,12 @@ import java.util.UUID;
 public class ClearDataCommand implements CommandExecutor {
 
     List<UUID> players = new ArrayList<>();
+    ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(!(sender instanceof Player)) {
-            sender.sendMessage("§cYou aren't a player, you got no data");
+            chatHandler.sendCommandFeedback("You aren't a player, you got no data", true, sender);
             return false;
         }
 
@@ -36,10 +38,10 @@ public class ClearDataCommand implements CommandExecutor {
         if(args.length >= 1) {
             if(args[0].equalsIgnoreCase("cancel")) {
                 players.remove(player.getUniqueId());
-                player.sendMessage("§aDeletion has been cancelled");
+                chatHandler.sendCommandFeedback("Deletion has been cancelled", false, sender);
                 return true;
             }
-            player.sendMessage("§cTo confirm your deletion, please don't use any arguments.");
+            chatHandler.sendCommandFeedback("To confirm your deletion, please don't use any arguments.", true, sender);
             return false;
         }
         players.remove(player.getUniqueId());

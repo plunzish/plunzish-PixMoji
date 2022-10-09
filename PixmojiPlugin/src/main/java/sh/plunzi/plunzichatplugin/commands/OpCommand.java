@@ -8,19 +8,20 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
+import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 
 public class OpCommand implements CommandExecutor {
-
+    ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if(!sender.isOp()) {
-            sender.sendMessage("§cYou can't do that.");
+            chatHandler.sendCommandFeedback("You can't do that.", true, sender);
             return false;
         }
 
         if(args.length != 1) {
-            sender.sendMessage("§cUse like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player>");
+            chatHandler.sendCommandFeedback("Wrong syntax, use like this: " + ((sender instanceof Player)?"/":"") + command.getName() + " <player>", true, sender);
             return false;
         }
 

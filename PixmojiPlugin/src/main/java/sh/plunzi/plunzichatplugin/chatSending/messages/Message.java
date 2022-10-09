@@ -10,20 +10,19 @@ import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.intellij.lang.annotations.RegExp;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmoji;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmojis;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Message {
 
-    private final Player author;
+    private final CommandSender author;
     private final Player receiver;
 
     private final MessageType messageType;
@@ -32,16 +31,16 @@ public class Message {
     private final Component contentLightlyCensored;
     private final Component contentHeavilyCensored;
 
-    public Message(String rawMessage, Player author, MessageType messageType, Player receiver) {
+    public Message(String rawMessage, CommandSender author, MessageType messageType, Player receiver) {
 
-        Player player = author;
+        CommandSender sender = author;
         if(messageType == MessageType.PRIVATE_OUT) {
-            player = receiver;
+            sender = receiver;
         }
 
-        this.contentUncensored = stringToComponent(rawMessage, player, 0, messageType);
-        this.contentLightlyCensored = stringToComponent(rawMessage, player, 1, messageType);
-        this.contentHeavilyCensored = stringToComponent(rawMessage, player, 2, messageType);
+        this.contentUncensored = stringToComponent(rawMessage, sender.getName(), Censorship.NONE, messageType);
+        this.contentLightlyCensored = stringToComponent(rawMessage, sender.getName(), Censorship.LIGHT, messageType);
+        this.contentHeavilyCensored = stringToComponent(rawMessage, sender.getName(), Censorship.HEAVY, messageType);
 
         this.messageType = messageType;
 
@@ -49,10 +48,10 @@ public class Message {
         this.receiver = receiver;
     }
 
-    public TextComponent stringToComponent(String string, Player player, int censorLevel, MessageType messageType) {
+    public TextComponent stringToComponent(String string, String authorName, Censorship censorLevel, MessageType messageType) {
         String message = censorString(string, censorLevel);
 
-        TextComponent messageComponent = Component.text(getPlayerNameFormatted(player.getName(), messageType));
+        TextComponent messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType));
         messageComponent = messageComponent.append(Component.text(message));
 
         messageComponent = handleFormatting(messageComponent);
@@ -60,7 +59,7 @@ public class Message {
         messageComponent = handleAts(messageComponent);
 
         message = PlainTextComponentSerializer.plainText().serialize(messageComponent);
-        message = message.replace(getPlayerNameFormatted(player.getName(), messageType), "");
+        message = message.replace(getPlayerNameFormatted(authorName, messageType), "");
 
         Pixmoji pixmoji = Pixmojis.nullmoji;
         try {
@@ -69,16 +68,16 @@ public class Message {
 
         if(pixmoji.exists(PlunziChatPlugin.PIXMOJIS) && message.length() == 1) {
 
-            messageComponent = Component.text(getPlayerNameFormatted(player.getName(), messageType))
+            messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType))
                     .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build());
 
             messageComponent = messageComponent.append(Component.text(pixmoji.getUnicodeChar() + "\n")
                     .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build()));
 
-            messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(player.getName(), messageType) + "\n" )
+            messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType) + "\n" )
                     .style(Style.style().font(Key.key("minecraft", "default")).build()));
 
-            messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(player.getName(), messageType))
+            messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType))
                     .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()));
         }
 
@@ -86,14 +85,20 @@ public class Message {
     }
 
     protected String getPlayerNameFormatted(String playerName, MessageType messageType) {
+
+        String playerNameFormatted = PlunziChatPlugin.FILE_MANAGER.getPublicMessageFormatting();
         switch (messageType) {
-            default:
-                return PlunziChatPlugin.FILE_MANAGER.getPublicMessageFormatting().replace("%s", playerName);
             case PRIVATE_IN:
-                return PlunziChatPlugin.FILE_MANAGER.getPrivateMessageFormattingIn().replace("%s", playerName);
+                playerNameFormatted = PlunziChatPlugin.FILE_MANAGER.getPrivateMessageFormattingIn();
+                break;
             case PRIVATE_OUT:
-                return PlunziChatPlugin.FILE_MANAGER.getPrivateMessageFormattingOut().replace("%s", playerName);
+                playerNameFormatted = PlunziChatPlugin.FILE_MANAGER.getPrivateMessageFormattingOut();
+                break;
+            case BROADCAST:
+                playerNameFormatted = PlunziChatPlugin.FILE_MANAGER.getBroadcastFormatting();
+                break;
         }
+        return playerNameFormatted.replace("%s", playerName);
     }
 
     private TextComponent handleAts(TextComponent inputTextComponent) {
@@ -191,7 +196,7 @@ public class Message {
         patternBuilder = new StringBuilder(patternBuilder.substring(0, patternBuilder.length() - 1));
         patternBuilder.append("):");
 
-        Pattern emojiPattern = Pattern.compile(patternBuilder.toString());
+        Pattern emojiPattern = Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE);
         Matcher matcher = emojiPattern.matcher(input);
 
         while (matcher.find()) {
@@ -209,10 +214,10 @@ public class Message {
         return inputTextComponent;
     }
 
-    public String censorString(String string, int censorLevel) {
+    public String censorString(String string, Censorship censorLevel) {
 
         switch (censorLevel) {
-            case 1:
+            case LIGHT:
                 String censoredMessageLight = string;
 
                 for(String censoredWord : PlunziChatPlugin.FILE_MANAGER.getCensoredWords()) {
@@ -224,7 +229,7 @@ public class Message {
                     }
                 }
                 return censoredMessageLight;
-            case 2:
+            case HEAVY:
                 String censoredMessage = string;
 
                 for(String censoredWord : PlunziChatPlugin.FILE_MANAGER.getCensoredWords()) {
@@ -269,7 +274,7 @@ public class Message {
         return contentHeavilyCensored;
     }
 
-    public Player getAuthor() {
+    public CommandSender getAuthor() {
         return author;
     }
 
