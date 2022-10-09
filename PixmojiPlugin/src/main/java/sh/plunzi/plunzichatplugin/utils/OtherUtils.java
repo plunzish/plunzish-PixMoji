@@ -63,6 +63,10 @@ public class OtherUtils {
 
     public List<Player> stringToPlayers(String input, CommandSender sender, boolean sendErrorMessages) {
 
+        if(input.equals("*") && sender.isOp()) {
+            return new ArrayList<>(Bukkit.getOnlinePlayers());
+        }
+
         String[] splitInput = input.split(",");
         List<Player> players = new ArrayList<>();
 

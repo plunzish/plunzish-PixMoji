@@ -23,11 +23,20 @@ public class PrivateMessageTabCompletion implements TabCompleter {
             ArrayList<String> availableArgs1 = new ArrayList<>();
 
             for(Player player : Bukkit.getOnlinePlayers()) {
-                if(!player.getName().equals(sender.getName())) {
+
+                if(args[0].endsWith(",")) {
+
+                    if(!player.getName().equals(sender.getName())) {
+                        availableArgs1.add(args[0] + player.getName());
+                    }
+
+                } else if(!player.getName().equals(sender.getName())) {
                     availableArgs1.add(player.getName());
                 }
             }
-
+            if(sender.isOp()) {
+                availableArgs1.add("*");
+            }
             return availableArgs1;
         }
         if(args[args.length-1].startsWith(":")) {

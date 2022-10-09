@@ -33,6 +33,5 @@ sh\plunzi\plunzichatplugin\commands\tabCompletion\PrivateMessageTabCompletion.cl
 sh\plunzi\plunzichatplugin\pixmojiData\Pixmojis.class
 sh\plunzi\plunzichatplugin\utils\DatabaseManager$1.class
 sh\plunzi\plunzichatplugin\listeners\ChatListener.class
-sh\plunzi\plunzichatplugin\utils\PlayerNonExistendException.class
 sh\plunzi\plunzichatplugin\PlunziChatPlugin.class
 sh\plunzi\plunzichatplugin\commands\FriendsCommand$1.class

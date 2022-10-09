@@ -15,7 +15,6 @@ import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 import sh.plunzi.plunzichatplugin.utils.DatabaseManager;
 import sh.plunzi.plunzichatplugin.utils.OtherUtils;
-import sh.plunzi.plunzichatplugin.utils.PlayerNonExistendException;
 
 import java.util.*;
 
@@ -78,7 +77,7 @@ public class FriendsCommand implements CommandExecutor {
         UUID playerUUID = player.getUniqueId();
 
         if(target == player) {
-            chatHandler.sendCommandFeedback(target.getName() + "> You can't (un)friend yourself", true, player);
+            chatHandler.sendCommandFeedback(target.getName() + " > You can't (un)friend yourself", true, player);
             if(databaseManager.getFriends(playerUUID).isEmpty()) chatHandler.sendCommandFeedback("(Also I'm sorry that you are lonely)", false, player);
             return;
         }
@@ -87,7 +86,7 @@ public class FriendsCommand implements CommandExecutor {
             case "add":
 
                 if (databaseManager.getFriends(playerUUID).contains(target)) {
-                    chatHandler.sendCommandFeedback(target.getName() + "> You're already friends with this player!", true, player);
+                    chatHandler.sendCommandFeedback(target.getName() + " > You're already friends with this player!", true, player);
                     return;
                 }
                 sendFriendRequest(player, target);
@@ -136,7 +135,7 @@ public class FriendsCommand implements CommandExecutor {
             }
             return;
         }
-        chatHandler.sendCommandFeedback("Friend request sent to" + target.getName() + " ! (they have 2 minutes to accept)", false, player);
+        chatHandler.sendCommandFeedback("Friend request sent to " + target.getName() + "! (they have 2 minutes to accept)", false, player);
         chatHandler.sendCommandFeedback(Component.text(player.getName() + " sent you a friend Request (you have 2 minutes to accept)")
                 .append(Component.text("\n"))
                 .append(

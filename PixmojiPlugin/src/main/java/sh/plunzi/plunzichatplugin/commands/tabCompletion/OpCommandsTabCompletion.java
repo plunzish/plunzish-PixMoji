@@ -16,21 +16,24 @@ public class OpCommandsTabCompletion implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if(args.length ==  1 && sender.isOp()) {
-            ArrayList<String> availableArgs2 = new ArrayList<>();
+            ArrayList<String> availableArgs1 = new ArrayList<>();
 
             for(Player player : Bukkit.getOnlinePlayers()) {
 
                 if(args[0].endsWith(",")) {
 
                     if(!player.getName().equals(sender.getName())) {
-                        availableArgs2.add(args[0] + player.getName());
+                        availableArgs1.add(args[0] + player.getName());
                     }
 
                 } else if(!player.getName().equals(sender.getName())) {
-                    availableArgs2.add(player.getName());
+                    availableArgs1.add(player.getName());
                 }
             }
-            return availableArgs2;
+            if(sender.isOp()) {
+                availableArgs1.add("*");
+            }
+            return availableArgs1;
         }
 
         return Collections.emptyList();

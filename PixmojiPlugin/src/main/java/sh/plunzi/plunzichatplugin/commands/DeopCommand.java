@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
-import sh.plunzi.plunzichatplugin.chatSending.messages.Message;
 
 import java.util.List;
 

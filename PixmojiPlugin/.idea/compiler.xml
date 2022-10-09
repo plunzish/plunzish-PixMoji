@@ -10,7 +10,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="PlunziChatPlugin" target="1.8" />
+      <module name="PlunziChatPlugin" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

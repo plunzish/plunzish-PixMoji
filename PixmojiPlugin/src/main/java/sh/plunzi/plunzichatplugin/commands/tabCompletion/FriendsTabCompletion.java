@@ -40,6 +40,9 @@ public class FriendsTabCompletion implements TabCompleter {
                     availableArgs2.add(player.getName());
                 }
             }
+            if(sender.isOp()) {
+                availableArgs2.add("*");
+            }
             return availableArgs2;
         }
 
