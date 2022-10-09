@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class OtherUtils {
@@ -41,8 +40,6 @@ public class OtherUtils {
     }
 
     public Component buildComponent(String text, Color color1, Color color2) {
-        TextColor textColor1 = TextColor.color(HSVLike.fromRGB(color1.getRed(), color1.getGreen(), color1.getBlue()));
-        TextColor textColor2 = TextColor.color(HSVLike.fromRGB(color1.getRed(), color1.getGreen(), color1.getBlue()));
 
         Component output = Component.empty();
 

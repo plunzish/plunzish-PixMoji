@@ -153,12 +153,7 @@ public class FriendsCommand implements CommandExecutor {
 
     private void startTimer(Player player, Player target) {
         BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-        scheduler.scheduleSyncDelayedTask(PlunziChatPlugin.INSTANCE, new Runnable() {
-            @Override
-            public void run() {
-                removeEntry(player, target);
-            }
-        }, 20*60*2);
+        scheduler.scheduleSyncDelayedTask(PlunziChatPlugin.INSTANCE, () -> removeEntry(player, target), 20*60*2);
     }
 
     private void removeEntry(Player player, Player target) {
