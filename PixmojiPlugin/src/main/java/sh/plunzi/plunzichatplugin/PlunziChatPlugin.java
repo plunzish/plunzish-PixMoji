@@ -5,11 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
-import sh.plunzi.plunzichatplugin.commands.*;
-import sh.plunzi.plunzichatplugin.dataUtils.DatabaseManager;
+import sh.plunzi.plunzichatplugin.commands.DebuggingCommand;
+import sh.plunzi.plunzichatplugin.commands.PrivateMessageCommand;
 import sh.plunzi.plunzichatplugin.dataUtils.FileManager;
 import sh.plunzi.plunzichatplugin.listeners.ChatListener;
-import sh.plunzi.plunzichatplugin.listeners.JoinListener;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmojis;
 
 public final class PlunziChatPlugin extends JavaPlugin {
@@ -17,7 +16,6 @@ public final class PlunziChatPlugin extends JavaPlugin {
     public static Pixmojis PIXMOJIS;
     public static ChatHandler CHAT_HANDLER;
     public static FileManager FILE_MANAGER;
-    public static DatabaseManager DATABASE_MANAGER;
     public static String PLUNZISH_NAMESPACE = "plunzish";
 
     public static final Key PIXMOJI_FONT = Key.key(PLUNZISH_NAMESPACE, "pixmojis");
@@ -43,8 +41,6 @@ public final class PlunziChatPlugin extends JavaPlugin {
     //
     //TODO Broadcast
     //
-    //TODO Database <-
-    //
     //TODO Friend system
     // - Friend broadcast
     // - responde /r
@@ -61,19 +57,12 @@ public final class PlunziChatPlugin extends JavaPlugin {
         FILE_MANAGER = new FileManager();
         PIXMOJIS = new Pixmojis();
         CHAT_HANDLER = new ChatHandler();
-        DATABASE_MANAGER = new DatabaseManager();
 
         PluginManager pluginManager = Bukkit.getPluginManager();
         pluginManager.registerEvents(new ChatListener(), this);
-        pluginManager.registerEvents(new JoinListener(), this);
 
         Bukkit.getPluginCommand("msg").setExecutor(new PrivateMessageCommand());
-        Bukkit.getPluginCommand("setcensor").setExecutor(new SetCensorlevelCommand());
         Bukkit.getPluginCommand("debug").setExecutor(new DebuggingCommand());
-        Bukkit.getPluginCommand("op").setExecutor(new OpCommand());
-        Bukkit.getPluginCommand("deop").setExecutor(new DeopCommand());
-        Bukkit.getPluginCommand("clearmydata").setExecutor(new ClearDataCommand());
-        Bukkit.getPluginCommand("broadcast").setExecutor(new BroadcastCommand());
     }
 
     @Override

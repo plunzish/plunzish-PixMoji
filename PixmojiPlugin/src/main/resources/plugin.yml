@@ -7,18 +7,7 @@ description: The chat plugin for the Plunzish Minecraft server (enables use of P
 commands:
   msg:
     description: Privately Message a player
-    aliases: [ w, tell, dm ]
-  broadcast:
-    description: Broadcast a message to the entire server
-    aliases: [ yellatthewholeserver ]
+    aliases: [ w, tell ]
   debug:
      description: debug
      aliases: [ deez, nuts ]
-  setcensor:
-    description: setcensor [heavy, light, none]
-  op:
-    description: /op <player>
-  deop:
-    description: /deop <player>
-  clearmydata:
-      description: clears your data from the database

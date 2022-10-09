@@ -15,73 +15,74 @@ public class FileManager {
 
     File file = new File(Bukkit.getServer().getWorldContainer(), "pixmojiConfig.properties");
 
-    List<String> strings = new ArrayList<>();
+    private static final String NAME_FORMATTING_STRING = "name-formatting";
+    private static final String DIRECT_MESSAGE_FORMATTING_IN_STRING = "direct-message-formatting-in";
+    private static final String DIRECT_MESSAGE_FORMATTING_OUT_STRING = "direct-message-formatting-out";
+    private static final String BROADCAST_FORMATTING_STRING = "broadcast-formatting";
+    private static final String CENSORED_WORDS_STRING = "censored-words";
+    private static final String HARD_CENSORED_WORDS_STRING = "hard-censored-words";
+    private static final String DEBUG_BOOLEAN_STRING = "debug-boolean";
+    private static final String CENSOR_VALUE_STRING = "default-censor";
 
-    private static final Field NAME_FORMATTING = new Field("name-formatting", "<%s> ");
-    private static final Field DIRECT_MESSAGE_FORMATTING_IN = new Field("direct-message-formatting-in", "§7 §e[§b§l>§e] §l%s §r§e» §7");
-    private static final Field DIRECT_MESSAGE_FORMATTING_OUT = new Field("direct-message-formatting-out", "§7 §e[§d§l<§e] §l%s §r§e« §7");
-    private static final Field BROADCAST_FORMATTING = new Field("broadcast-formatting", "\u00a76\u00a7l");
-    private static final Field CENSORED_WORDS = new Field("censored-words","[\"Monsbot ist doof\",\"Monsbot is stupid\",\"Poopserver\"]");
-    private static final Field HARD_CENSORED_WORDS = new Field("hard-censored-words","[]");
-    private static final Field DEBUG_BOOLEAN = new Field("debug-boolean","false ");
-    private static final Field CENSOR_VALUE = new Field("default-censor","LIGHT\n#available options: HEAVY, LIGHT, NONE (not case sensitive)");
-    private static final Field DATABASE_USERNAME = new Field("database-username","root");
-    private static final Field DATABASE_PASSWORD = new Field("database-password","1234");
-    private static final Field[] FIELDS = {
-            NAME_FORMATTING,
-            DIRECT_MESSAGE_FORMATTING_IN,
-            DIRECT_MESSAGE_FORMATTING_OUT,
-            BROADCAST_FORMATTING,
-            CENSORED_WORDS,
-            HARD_CENSORED_WORDS,
-            DEBUG_BOOLEAN,
-            CENSOR_VALUE,
-            DATABASE_USERNAME,
-            DATABASE_PASSWORD
-    };
+    String defaultCensoredWords = CENSORED_WORDS_STRING + "=[\"Monsbot ist doof\",\"Monsbot is stupid\",\"Poopserver\"]";
+    String defaultHardCensoredWords = HARD_CENSORED_WORDS_STRING + "=[]";
+    String defaultNameFormatting = NAME_FORMATTING_STRING + "=<%s> ";
+    String defaultBroadcastFormatting = BROADCAST_FORMATTING_STRING + "\u00a76\u00a7l";
+    String defaultDirectMessageFormattingIn = DIRECT_MESSAGE_FORMATTING_IN_STRING + "\u00a77%s>>";
+    String defaultDirectMessageFormattingOut = DIRECT_MESSAGE_FORMATTING_OUT_STRING + "\u00a77%s<<";
+    String defaultDebugBoolean = DEBUG_BOOLEAN_STRING + "=false ";
+    String defaultCensorValue = CENSOR_VALUE_STRING + "=LIGHT\n#available options: HEAVY, LIGHT, NONE (not case sensitive)";
+
 
     public FileManager() {
         try {
             if(file.createNewFile()) {
                 FileOutputStream fileOutputStream = new FileOutputStream(file, true);
-                DataOutputStream dataOutputStream = new DataOutputStream(fileOutputStream);
-                dataOutputStream.writeUTF("#Config file for the plugin, can be changed without reloading server\n");
 
-                for (Field field: FIELDS) {
-                    dataOutputStream.writeUTF(field.whole);
-                    dataOutputStream.writeUTF("\n");
-                }
-                dataOutputStream.close();
+                fileOutputStream.write("#Config file for the plugin, can be changed without reloading server".getBytes());
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.write(defaultNameFormatting.getBytes());
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.write(defaultCensoredWords.getBytes());
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.write(defaultHardCensoredWords.getBytes());
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.write(defaultDebugBoolean.getBytes());
+                fileOutputStream.write("\n".getBytes());
+                fileOutputStream.write(defaultCensorValue.getBytes());
                 fileOutputStream.close();
             }
 
         } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage("\u00a7c" + e);
+            Debug.throwException(e);
         }
     }
 
     public String getPublicMessageFormatting() {
-        return getField(NAME_FORMATTING);
+        String messageFormatting = this.defaultNameFormatting.replace(NAME_FORMATTING_STRING + "=", "");
+        messageFormatting = getField(NAME_FORMATTING_STRING, messageFormatting);
+        return messageFormatting;
     }
     public String getPrivateMessageFormattingIn() {
-        return getField(DIRECT_MESSAGE_FORMATTING_IN);
+        String messageFormatting = this.defaultDirectMessageFormattingIn.replace(DIRECT_MESSAGE_FORMATTING_IN_STRING + "=", "");
+        messageFormatting = getField(DIRECT_MESSAGE_FORMATTING_IN_STRING, messageFormatting);
+        return messageFormatting;
     }
     public String getPrivateMessageFormattingOut() {
-        return getField(DIRECT_MESSAGE_FORMATTING_OUT);
+        String messageFormatting = this.defaultDirectMessageFormattingOut.replace(DIRECT_MESSAGE_FORMATTING_OUT_STRING + "=", "");
+        messageFormatting = getField(DIRECT_MESSAGE_FORMATTING_OUT_STRING, messageFormatting);
+        return messageFormatting;
     }
     public String getBroadcastFormatting() {
-        return getField(BROADCAST_FORMATTING);
+        String messageFormatting = this.defaultBroadcastFormatting.replace(BROADCAST_FORMATTING_STRING + "=", "");
+        messageFormatting = getField(BROADCAST_FORMATTING_STRING, messageFormatting);
+        return messageFormatting;
     }
-    public String getDatabasePassword() {
-        return getField(DATABASE_PASSWORD);
-    }
-    public String getDatabaseUsername() {
-        return getField(DATABASE_USERNAME);
-    }
-    public Censorship getDefaultCensorLevel() {
+    public Censorship getCensorLevel() {
+        String censorLevel = this.defaultCensoredWords.replace(CENSOR_VALUE_STRING + "=", "");
         Censorship censorship = Censorship.HEAVY;
         try {
-            censorship = Censorship.valueOf(getField(CENSOR_VALUE).toUpperCase().replaceAll("\\s+", ""));
+            censorship = Censorship.valueOf(getField(CENSOR_VALUE_STRING, censorLevel).toUpperCase().replaceAll("\\s+", ""));
         } catch (IllegalArgumentException e) {
             Debug.throwException(e);
         }
@@ -89,7 +90,9 @@ public class FileManager {
     }
 
     public boolean getDebugBoolean() {
-        return getField(DEBUG_BOOLEAN).replace(" ", "").equals("true");
+        boolean debugBoolean = true;
+        debugBoolean = getField(DEBUG_BOOLEAN_STRING, debugBoolean+"").replace(" ", "").equals("true");
+        return debugBoolean;
     }
 
     public List<String> getCensoredWords() {
@@ -99,9 +102,9 @@ public class FileManager {
     public List<String> getCensoredWords(boolean hard) {
         String censoredWords;
         if(hard) {
-            censoredWords = getField(HARD_CENSORED_WORDS);
+            censoredWords = getField(HARD_CENSORED_WORDS_STRING, defaultHardCensoredWords);
         } else {
-            censoredWords = getField(CENSORED_WORDS);
+            censoredWords = getField(CENSORED_WORDS_STRING, defaultCensoredWords);
         }
 
         Pattern pattern = Pattern.compile("\"(.+?)\"", Pattern.CASE_INSENSITIVE);
@@ -114,8 +117,8 @@ public class FileManager {
         return output;
     }
 
-    private String getField(Field field) {
-        return getField(field.name, field.value, this.file);
+    private String getField(String fieldName, String fallbackValue) {
+        return getField(fieldName, fallbackValue, this.file);
     }
 
     public String getField(String fieldName, String fallbackValue, File file) {
@@ -153,15 +156,4 @@ public class FileManager {
         return value;
     }
 
-}
-
-class Field {
-    String name;
-    String value;
-    String whole;
-    public Field(String name, String value) {
-        this.name = name;
-        this.value = value;
-        whole = name + "=" + value;
-    }
 }
