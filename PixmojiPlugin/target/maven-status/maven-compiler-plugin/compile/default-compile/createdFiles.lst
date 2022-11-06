@@ -1,16 +1,21 @@
 sh\plunzi\plunzichatplugin\commands\TextCommand.class
 sh\plunzi\plunzichatplugin\commands\tabCompletion\NoTabCompletion.class
 sh\plunzi\plunzichatplugin\commands\tabCompletion\DebuggingTabCompletion.class
+sh\plunzi\plunzichatplugin\commands\ColorCommand.class
+sh\plunzi\plunzichatplugin\commands\PartyCommand.class
 sh\plunzi\plunzichatplugin\listeners\JoinLeaveListener.class
 sh\plunzi\plunzichatplugin\commands\OpCommand.class
 sh\plunzi\plunzichatplugin\utils\DatabaseManager.class
 sh\plunzi\plunzichatplugin\chatSending\ChatHandler$1.class
 sh\plunzi\plunzichatplugin\chatSending\Debug.class
 sh\plunzi\plunzichatplugin\commands\FriendsCommand.class
+sh\plunzi\plunzichatplugin\commands\tabCompletion\PartyTabCompletion.class
 sh\plunzi\plunzichatplugin\commands\BroadcastCommand.class
 sh\plunzi\plunzichatplugin\utils\FileManager.class
 sh\plunzi\plunzichatplugin\commands\tabCompletion\OpCommandsTabCompletion.class
+sh\plunzi\plunzichatplugin\commands\tabCompletion\ColorTabCompletion.class
 sh\plunzi\plunzichatplugin\utils\Field.class
+sh\plunzi\plunzichatplugin\utils\MessageFilter.class
 sh\plunzi\plunzichatplugin\commands\tabCompletion\FriendsTabCompletion.class
 sh\plunzi\plunzichatplugin\commands\PrivateMessageCommand.class
 sh\plunzi\plunzichatplugin\commands\tabCompletion\SetCensorTabCompletion.class
@@ -34,4 +39,3 @@ sh\plunzi\plunzichatplugin\pixmojiData\Pixmojis.class
 sh\plunzi\plunzichatplugin\utils\DatabaseManager$1.class
 sh\plunzi\plunzichatplugin\listeners\ChatListener.class
 sh\plunzi\plunzichatplugin\PlunziChatPlugin.class
-sh\plunzi\plunzichatplugin\commands\FriendsCommand$1.class

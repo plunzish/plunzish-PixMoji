@@ -31,3 +31,5 @@ commands:
     description: Send a message just like in chat. Shows you what pixmojis and @s you can use (works in console too)
   r:
     description: Respond to the last private message somebody sent you
+  party:
+    description: Create/Join/Leave/Invite/etc. - party System

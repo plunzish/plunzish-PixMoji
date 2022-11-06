@@ -1,14 +1,15 @@
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\chatSending\messages\Message.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\listeners\JoinLeaveListener.java
+D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\PartyTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\ClearDataCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\PrivateMessageCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\chatSending\Debug.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\chatSending\ChatHandler.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\chatSending\messages\Censorship.java
+D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\utils\MessageFilter.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\pixmojiData\Pixmoji.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\FriendsTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\MessageTabCompletion.java
-D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\utils\PlayerNonExistendException.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\DebuggingTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\DeopCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\ResponseCommand.java
@@ -26,6 +27,7 @@ D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatp
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\party\PartySystem.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\pixmojiData\Pixmojis.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\PlunziChatPlugin.java
+D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\PartyCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\OpCommandsTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\DebuggingCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\utils\DatabaseManager.java

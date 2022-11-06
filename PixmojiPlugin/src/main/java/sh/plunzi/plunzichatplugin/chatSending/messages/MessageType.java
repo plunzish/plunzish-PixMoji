@@ -4,5 +4,6 @@ public enum MessageType {
     PUBLIC,
     PRIVATE_IN,
     PRIVATE_OUT,
-    BROADCAST
+    BROADCAST,
+    PARTY
 }

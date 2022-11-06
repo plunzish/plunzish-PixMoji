@@ -7,13 +7,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class DebuggingTabCompletion implements TabCompleter {
+public class ColorTabCompletion implements TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
 
-        return Collections.singletonList("§aDebüg");
+        if(args.length > 0 && args.length < 3 ) {
+            List<String> tabArgs = new ArrayList<>();
+            tabArgs.add("#");
+            return tabArgs;
+        }
+        return new ArrayList<>();
     }
 }

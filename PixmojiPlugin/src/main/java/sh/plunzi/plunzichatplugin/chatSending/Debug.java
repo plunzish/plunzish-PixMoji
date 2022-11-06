@@ -22,8 +22,11 @@ public class Debug {
         }
     }
 
-    public static void send(String message) {
-        send(message, null);
+    public static void send(Object message) {
+
+        if(message == null) message = "null";
+
+        send(message.toString(), null);
     }
 
     public static void send(Exception exception, Player player) {

@@ -32,6 +32,7 @@ public class MessageTabCompletion implements TabCompleter {
             for(Player player : Bukkit.getOnlinePlayers()) {
                 availableArgs2.add("@" + player.getName());
             }
+            availableArgs2.add("@r-");
             return availableArgs2;
         }
         return Collections.emptyList();

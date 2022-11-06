@@ -1,11 +1,11 @@
 package sh.plunzi.plunzichatplugin.chatSending;
 
-import it.unimi.dsi.fastutil.Hash;
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.messages.Censorship;
@@ -13,6 +13,7 @@ import sh.plunzi.plunzichatplugin.chatSending.messages.Message;
 import sh.plunzi.plunzichatplugin.chatSending.messages.MessageType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 
@@ -21,8 +22,8 @@ public class ChatHandler {
 
     private void sendMessage(Message message) {
 
-        if(message.isIllegal() && message.getAuthor() instanceof Player) {
-            notifyAdminsIllegalMessage((Player) message.getAuthor(), message.getRawContent());
+        if(message.isIllegal() && message.getPlayer1() instanceof Player) {
+            //Idk about this function, might remove it
             return;
         }
 
@@ -31,31 +32,40 @@ public class ChatHandler {
             case BROADCAST:
                 Player[] players = Bukkit.getOnlinePlayers().toArray(new Player[0]);
                 for(Player player : players) {
-                    displayMessage(player, message);
+                    displayMessage(player, message, true);
                 }
                 Bukkit.getConsoleSender().sendMessage(message.getContent(Censorship.NONE));
                 break;
             case PRIVATE_IN:
-                Player receiver = message.getReceiver();
-                displayMessage(receiver, message);
+                CommandSender receiver = message.getPlayer2();
+                displayMessage(receiver, message, (message.getPlayer1() instanceof ConsoleCommandSender || message.getPlayer2() instanceof ConsoleCommandSender));
                 break;
             case PRIVATE_OUT:
-                CommandSender author = message.getAuthor();
-                displayMessage(author, message);
+                CommandSender author = message.getPlayer1();
+                displayMessage(author, message, (message.getPlayer1() instanceof ConsoleCommandSender || message.getPlayer2() instanceof ConsoleCommandSender));
+                break;
+            case PARTY:
+                List<UUID> partyPlayers = PlunziChatPlugin.PARTYSYSTEM.parties.get(((Player) message.getPlayer2()).getUniqueId());
+
+                for(UUID player : partyPlayers) {
+                    displayMessage(Bukkit.getPlayer(player), message, false);
+                }
                 break;
         }
     }
 
-    private void displayMessage(CommandSender sender, Message message) {
+    private void displayMessage(CommandSender sender, Message message, boolean consoleCanSee) {
         if(sender instanceof Player) {
-
             Player player = (Player) sender;
             player.sendMessage(message.getContent(PlunziChatPlugin.DATABASE_MANAGER.getCensorLevel(player.getUniqueId())));
             if(message.getRawContent().contains("@" + player.getName())) {
                 Sound sound = Sound.sound(PlunziChatPlugin.CHAT_PING_SOUND, Sound.Source.VOICE, 100, 1);
                 player.playSound(sound);
             }
-
+            return;
+        }
+        if(consoleCanSee) {
+            Bukkit.getConsoleSender().sendMessage(message.getContent(Censorship.NONE));
         }
     }
 
@@ -67,22 +77,20 @@ public class ChatHandler {
         sendMessage(new Message(messageContent, sender, MessageType.BROADCAST, null));
     }
 
-    public void sendPrivateMessage(String messageContent, CommandSender author, Player receiver) {
+    public void sendPrivateMessage(String messageContent, CommandSender author, CommandSender receiver) {
         Message messageIn = new Message(messageContent, author, MessageType.PRIVATE_IN, receiver);
         Message messageOut = new Message(messageContent, author, MessageType.PRIVATE_OUT, receiver);
 
         sendMessage(messageIn);
         sendMessage(messageOut);
 
-        if (author instanceof Player) {
-            lastResponseHashMap.put(receiver.getUniqueId(), ((Player) author).getUniqueId());
-        } else {
-            lastResponseHashMap.put(receiver.getUniqueId(), UUID.fromString("00000000-0000-0000-0000-000000000000"));
+        if (author instanceof Player && receiver instanceof Player) {
+            lastResponseHashMap.put(((Player) receiver).getUniqueId(), ((Player) author).getUniqueId());
+        } else if (!(receiver instanceof Player) && author instanceof Player) {
+            lastResponseHashMap.put(PlunziChatPlugin.CONSOLE_UUID, ((Player) author).getUniqueId());
+        } else if (receiver instanceof Player) {
+            lastResponseHashMap.put(((Player) receiver).getUniqueId(), PlunziChatPlugin.CONSOLE_UUID);
         }
-    }
-
-    private void notifyAdminsIllegalMessage(Player player, String context) {
-        //coming soon
     }
 
     public void sendCommandFeedback(Component text, boolean error, CommandSender sender) {

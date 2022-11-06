@@ -4,10 +4,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
+import sh.plunzi.plunzichatplugin.chatSending.Debug;
 
 import java.util.UUID;
 
@@ -18,14 +20,15 @@ public class ResponseCommand implements CommandExecutor {
 
         if(args.length < 1) return false;
 
-        if(!(sender instanceof Player)) {
-            chatHandler.sendCommandFeedback("You're not a player, so no one can message you", true, sender);
+        if(!(sender instanceof Player || sender instanceof ConsoleCommandSender)) {
+            chatHandler.sendCommandFeedback("You're neither a player nor a console, so no one can message you", true, sender);
             return false;
         }
 
-        Player player = (Player) sender;
-        if(!chatHandler.lastResponseHashMap.containsKey(player.getUniqueId())) {
-            chatHandler.sendCommandFeedback("You have nobody to respond to", true, player);
+        UUID uuid = sender instanceof Player ? ((Player) sender).getUniqueId() : PlunziChatPlugin.CONSOLE_UUID;
+
+        if(!chatHandler.lastResponseHashMap.containsKey(uuid)) {
+            chatHandler.sendCommandFeedback("You have nobody to respond to", true, sender);
             return false;
         }
 
@@ -34,16 +37,9 @@ public class ResponseCommand implements CommandExecutor {
             messageContent.append(element).append(" ");
         }
 
-        UUID receiverUUID = chatHandler.lastResponseHashMap.get(player.getUniqueId());
+        UUID receiverUUID = chatHandler.lastResponseHashMap.get(uuid);
 
-        if (receiverUUID == UUID.fromString("00000000-0000-0000-0000-000000000000")) {
-            Bukkit.getConsoleSender().sendMessage(player.getName() + " replied: " + messageContent);
-            return true;
-        }
-
-        Player receiver = Bukkit.getPlayer(receiverUUID);
-
-
+        CommandSender receiver = (receiverUUID.equals(PlunziChatPlugin.CONSOLE_UUID)) ? Bukkit.getServer().getConsoleSender() : Bukkit.getPlayer(receiverUUID);
 
         chatHandler.sendPrivateMessage(messageContent.toString(), sender, receiver);
 

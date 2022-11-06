@@ -10,6 +10,7 @@ import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class OtherUtils {
 
@@ -68,7 +69,8 @@ public class OtherUtils {
         List<Player> players = new ArrayList<>();
 
         for(String inputElement : splitInput) {
-            Player player = Bukkit.getPlayerExact(inputElement);
+            Player player = inputElement.equals("r") ? getRandomPlayer() : Bukkit.getPlayerExact(inputElement);
+
             if(player == null) {
                 if(sendErrorMessages) PlunziChatPlugin.CHAT_HANDLER.sendCommandFeedback(inputElement + " > Player not found", true, sender);
 
@@ -77,6 +79,10 @@ public class OtherUtils {
             players.add(player);
         }
         return players;
+    }
+
+    public Player getRandomPlayer() {
+        return (Player) Bukkit.getOnlinePlayers().toArray()[new Random().nextInt(Bukkit.getOnlinePlayers().size())];
     }
 }
 

@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 import sh.plunzi.plunzichatplugin.commands.*;
 import sh.plunzi.plunzichatplugin.commands.tabCompletion.*;
+import sh.plunzi.plunzichatplugin.party.PartySystem;
 import sh.plunzi.plunzichatplugin.utils.DatabaseManager;
 import sh.plunzi.plunzichatplugin.utils.FileManager;
 import sh.plunzi.plunzichatplugin.listeners.ChatListener;
@@ -16,7 +17,10 @@ import sh.plunzi.plunzichatplugin.listeners.JoinLeaveListener;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmojis;
 
 import net.kyori.adventure.text.Component;
+import sh.plunzi.plunzichatplugin.utils.MessageFilter;
 import sh.plunzi.plunzichatplugin.utils.OtherUtils;
+
+import java.util.UUID;
 
 public final class PlunziChatPlugin extends JavaPlugin {
 
@@ -26,7 +30,9 @@ public final class PlunziChatPlugin extends JavaPlugin {
     public static DatabaseManager DATABASE_MANAGER;
     public static OtherUtils UTILS;
     public static PlunziChatPlugin INSTANCE;
+    public static PartySystem PARTYSYSTEM;
     public static String PLUNZISH_NAMESPACE = "plunzish";
+    public static UUID CONSOLE_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     public static Component PREFIX;
 
@@ -38,8 +44,11 @@ public final class PlunziChatPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+
         register();
         Bukkit.getConsoleSender().sendMessage("\u00a76Pixmoji Plugin loaded \u00a7a:" + PIXMOJIS.getRandom().getName() + ":");
+
+        this.getServer().getLogger().setFilter(new MessageFilter());
 
         PREFIX = UTILS.buildComponent("[Plunzish]", Color.fromRGB(0xffc400), Color.fromRGB(0xae00d9));
         PREFIX = PREFIX.append(Component.text(" ").color(TextColor.color(0x666666)));
@@ -50,10 +59,10 @@ public final class PlunziChatPlugin extends JavaPlugin {
     //
     //TODO Database <-
     //
-    //TODO Friend system    <---
-    // - lock
+    //TODO Friend system    <-
+    // - block
     //
-    //TODO Partysystem
+    //TODO Partysystem <-
     // - Partychat
     //TODO Formatting
 
@@ -64,6 +73,7 @@ public final class PlunziChatPlugin extends JavaPlugin {
         CHAT_HANDLER = new ChatHandler();
         DATABASE_MANAGER = new DatabaseManager();
         UTILS = new OtherUtils();
+        PARTYSYSTEM = new PartySystem();
         INSTANCE = this;
 
         PluginManager pluginManager = Bukkit.getPluginManager();
@@ -76,6 +86,8 @@ public final class PlunziChatPlugin extends JavaPlugin {
         Bukkit.getPluginCommand("setcensor").setTabCompleter(new SetCensorTabCompletion());
         Bukkit.getPluginCommand("debug").setExecutor(new DebuggingCommand());
         Bukkit.getPluginCommand("debug").setTabCompleter(new DebuggingTabCompletion());
+        Bukkit.getPluginCommand("color").setExecutor(new ColorCommand());
+        Bukkit.getPluginCommand("color").setTabCompleter(new ColorTabCompletion());
         Bukkit.getPluginCommand("op").setExecutor(new OpCommand());
         Bukkit.getPluginCommand("op").setTabCompleter(new OpCommandsTabCompletion());
         Bukkit.getPluginCommand("deop").setExecutor(new DeopCommand());
@@ -90,6 +102,8 @@ public final class PlunziChatPlugin extends JavaPlugin {
         Bukkit.getPluginCommand("r").setTabCompleter(new MessageTabCompletion());
         Bukkit.getPluginCommand("friends").setExecutor(new FriendsCommand());
         Bukkit.getPluginCommand("friends").setTabCompleter(new FriendsTabCompletion());
+        Bukkit.getPluginCommand("party").setExecutor(new PartyCommand());
+        Bukkit.getPluginCommand("party").setTabCompleter(new PartyTabCompletion());
 
     }
 

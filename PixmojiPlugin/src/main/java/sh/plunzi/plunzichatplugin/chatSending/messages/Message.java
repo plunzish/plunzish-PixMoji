@@ -4,16 +4,18 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.intellij.lang.annotations.RegExp;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
+import sh.plunzi.plunzichatplugin.chatSending.Debug;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmoji;
 import sh.plunzi.plunzichatplugin.pixmojiData.Pixmojis;
 
@@ -22,8 +24,8 @@ import java.util.regex.Pattern;
 
 public class Message {
 
-    private final CommandSender author;
-    private final Player receiver;
+    private final CommandSender player1;
+    private final CommandSender player2;
 
     private final MessageType messageType;
 
@@ -31,7 +33,8 @@ public class Message {
     private final Component contentLightlyCensored;
     private final Component contentHeavilyCensored;
 
-    public Message(String rawMessage, CommandSender author, MessageType messageType, Player receiver) {
+
+    public Message(String rawMessage, CommandSender author, MessageType messageType, CommandSender receiver) {
 
         CommandSender sender = author;
         if(messageType == MessageType.PRIVATE_OUT) {
@@ -44,17 +47,18 @@ public class Message {
 
         this.messageType = messageType;
 
-        this.author = author;
-        this.receiver = receiver;
+        this.player1 = author;
+
+        this.player2 = receiver;
     }
 
     public TextComponent stringToComponent(String string, String authorName, Censorship censorLevel, MessageType messageType) {
         String message = censorString(string, censorLevel);
 
-        TextComponent messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType));
+        TextComponent messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType))
+                .hoverEvent(HoverEvent.showText(Component.text("(All Messages can be seen by console)")));
         messageComponent = messageComponent.append(Component.text(message));
 
-        messageComponent = handleFormatting(messageComponent);
         messageComponent = handlePixmojis(messageComponent);
         messageComponent = handleAts(messageComponent);
 
@@ -69,16 +73,29 @@ public class Message {
         if(pixmoji.exists(PlunziChatPlugin.PIXMOJIS) && message.length() == 1) {
 
             messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType))
-                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build());
-
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()); //make space                         //[formattedInvis][Emoji]
+                                                                                                                                        //
+                                                                                                                                        //
             messageComponent = messageComponent.append(Component.text(pixmoji.getUnicodeChar() + "\n")
-                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build()));
-
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build())); //add Emoji                               //[formattedInvis][Emoji]
+                                                                                                                                        //                IIIIIII <- The Emoji is overlapping into the other rows
+                                                                                                                                        //                IIIIIII
             messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType) + "\n" )
-                    .style(Style.style().font(Key.key("minecraft", "default")).build()));
-
+                    .style(Style.style().font(Key.key("minecraft", "default")).build()))
+            .hoverEvent(HoverEvent.showText(Component.text("(All Messages can be seen by console)")));//add Name                  //[formattedInvis][Emoji]
+                                                                                                                                        //[formattedVisib]IIIIIII
+                                                                                                                                        //                IIIIIII
             messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType))
-                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()));
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build())); //add Name                          //[formattedInvis][Emoji]
+                                                                                                                                        //[formattedVisib]IIIIIII   Done! :D
+                                                                                                                                        //[formattedInvis]IIIIIII
+        }
+
+        if(messageType == MessageType.PARTY) {
+            messageComponent = (TextComponent) PlunziChatPlugin.UTILS.buildComponent("[Party]", Color.fromRGB(0x0cd9ff), Color.fromRGB(0x2888ff))
+                    .hoverEvent(Component.text(player2.getName()))
+
+                    .append(Component.text(" ")).append(messageComponent);
         }
 
         return messageComponent;
@@ -105,18 +122,27 @@ public class Message {
 
         String input = PlainTextComponentSerializer.plainText().serialize(inputTextComponent);
 
-        String patternAsString = "@([^\\s\\W]+)";
+        String patternAsString = "@([^\\s\\W]+-?)";
         Pattern pattern = Pattern.compile(patternAsString);
         Matcher matcher = pattern.matcher(input);
 
         while (matcher.find()) {
-            if(Bukkit.getServer().getPlayerExact(matcher.group(1)) != null) {
 
-                @RegExp String replace = matcher.group(0);
+            Debug.send(matcher.group(0) + " 1");
+
+            if(Bukkit.getServer().getPlayerExact(matcher.group(1)) != null || matcher.group(1).equals("r-")) {
+
+                Debug.send(matcher.group(1) + " 2");
+
+                Object[] players = Bukkit.getOnlinePlayers().toArray();
+
+                @RegExp String replacement = matcher.group(0).replace("@r-","@" + PlunziChatPlugin.UTILS.getRandomPlayer().getName());
+
+                String magic = matcher.group(0);
 
                 inputTextComponent = (TextComponent) inputTextComponent.replaceText(TextReplacementConfig.builder()
-                        .match(replace).replacement(
-                                Component.text(replace).style(
+                        .match(magic).replacement(
+                                Component.text(replacement).style(
                                         Style.style()
                                                 .color(TextColor.color(HSVLike.fromRGB(162, 224, 254)))
                                                 .decoration(TextDecoration.BOLD, true)
@@ -180,7 +206,7 @@ public class Message {
                                 )
                         ).build());
             }
-        }*/
+        }*///TODO
 
         return inputTextComponent;
     }
@@ -274,8 +300,8 @@ public class Message {
         return contentHeavilyCensored;
     }
 
-    public CommandSender getAuthor() {
-        return author;
+    public CommandSender getPlayer1() {
+        return player1;
     }
 
     public String getRawContent() {
@@ -291,8 +317,8 @@ public class Message {
         return false;
     }
 
-    public Player getReceiver() {
-        return receiver;
+    public CommandSender getPlayer2() {
+        return player2;
     }
 
     public MessageType getType() {

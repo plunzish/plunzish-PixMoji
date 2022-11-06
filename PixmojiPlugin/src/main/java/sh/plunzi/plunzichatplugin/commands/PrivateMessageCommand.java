@@ -11,6 +11,7 @@ import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class PrivateMessageCommand implements CommandExecutor {
     @Override
@@ -27,11 +28,7 @@ public class PrivateMessageCommand implements CommandExecutor {
             return false;
         }
 
-        Player receiver = Bukkit.getPlayer(args[0]);
-        if(receiver == null) {
-            chatHandler.sendCommandFeedback("\u00a7cCannot find Player '" + args[0] + "'", true, sender);
-            return false;
-        }
+        List<Player> receivers = PlunziChatPlugin.UTILS.stringToPlayers(args[0], sender, true);
 
         StringBuilder messageContent = new StringBuilder();
         args = Arrays.copyOfRange(args, 1, args.length);
@@ -39,7 +36,10 @@ public class PrivateMessageCommand implements CommandExecutor {
             messageContent.append(element).append(" ");
         }
 
-        chatHandler.sendPrivateMessage(messageContent.toString(), sender, receiver);
+        for(Player receiver : receivers) {
+            chatHandler.sendPrivateMessage(messageContent.toString(), sender, receiver);
+        }
+
         return true;
     }
 }

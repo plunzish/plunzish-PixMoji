@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FriendsTabCompletion implements TabCompleter {
+public class PartyTabCompletion implements TabCompleter {
 
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
@@ -20,12 +20,24 @@ public class FriendsTabCompletion implements TabCompleter {
         if(args.length ==  1) {
             ArrayList<String> availableArgs1 = new ArrayList<>();
 
-            availableArgs1.add("add");
+            availableArgs1.add("create");
+            availableArgs1.add("invite");
+            availableArgs1.add("join");
+            availableArgs1.add("leave");
             availableArgs1.add("remove");
+            availableArgs1.add("disband");
 
             return availableArgs1;
         }
+
         if(args.length ==  2) {
+
+            if(   !(args[0].equals("invite") ||
+                    args[0].equals("remove") ||
+                    args[0].equals("join"))) {
+                return Collections.emptyList();
+            }
+
             ArrayList<String> availableArgs2 = new ArrayList<>();
 
             for(Player player : Bukkit.getOnlinePlayers()) {

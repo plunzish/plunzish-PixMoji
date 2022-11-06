@@ -16,37 +16,9 @@ public class DebuggingCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         ChatHandler chatHandler = PlunziChatPlugin.CHAT_HANDLER;
-        OtherUtils utils = PlunziChatPlugin.UTILS;
-        if(args.length < 3) {
-            chatHandler.sendCommandFeedback("no. /debug <color1> <color2> <message>. Colors as these: #ffee99", false, sender);
-            return false;
-        }
 
+        chatHandler.sendPrivateMessage("Debug!", sender, sender);
 
-        Color color1;
-        try {
-            color1 = Color.fromRGB((int) Long.parseLong(args[0].replace("#", ""), 16));
-        } catch (NumberFormatException e) {
-            chatHandler.sendCommandFeedback(command.getName() + " " + args[0] + " <-  Error here", true, sender);
-            return false;
-        }
-
-        Color color2;
-        try {
-            color2 = Color.fromRGB((int) Long.parseLong(args[1].replace("#", ""), 16));
-        } catch (NumberFormatException e) {
-            chatHandler.sendCommandFeedback(command.getName() + " " + args[0] + " <-  Error here", true, sender);
-            return false;
-        }
-
-
-        StringBuilder message = new StringBuilder();
-        for (String arg : Arrays.copyOfRange(args, 2, args.length)) {
-            message.append(arg).append(" ");
-        }
-        System.out.println(message);
-
-        chatHandler.sendCommandFeedback(utils.buildComponent(message.toString(), color1, color2), true, sender);
         return true;
     }
 }

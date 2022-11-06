@@ -34,6 +34,7 @@ public class PrivateMessageTabCompletion implements TabCompleter {
                     availableArgs1.add(player.getName());
                 }
             }
+            availableArgs1.add(args[0].endsWith(",") ? args[0] + "r" : "r");
             if(sender.isOp()) {
                 availableArgs1.add("*");
             }
@@ -53,6 +54,7 @@ public class PrivateMessageTabCompletion implements TabCompleter {
             for(Player player : Bukkit.getOnlinePlayers()) {
                 availableArgs2.add("@" + player.getName());
             }
+            availableArgs2.add("@r-");
             return availableArgs2;
         }
 
