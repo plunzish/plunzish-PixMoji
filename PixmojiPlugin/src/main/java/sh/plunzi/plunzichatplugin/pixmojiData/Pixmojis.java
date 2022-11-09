@@ -2,9 +2,12 @@ package sh.plunzi.plunzichatplugin.pixmojiData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Pixmojis {
     public List<Pixmoji> pixmojiList = new ArrayList<>();
+
+    public static Pixmoji nullmoji = new Pixmoji("null", '\uE000');
 
     public Pixmojis() {
         pixmojiList.add(new Pixmoji("angryDevil", '\uE001'));
@@ -62,17 +65,33 @@ public class Pixmojis {
 
     }
 
-    public Pixmoji getByName(String name) {
+    public Pixmoji getPixmoji(String name) {
 
         for(Pixmoji pixmoji : pixmojiList) {
-
-            if (name.equals(pixmoji.getName())) {
+            if (name.toLowerCase().equals(pixmoji.getName().toLowerCase())) {
                 return pixmoji;
             }
-
         }
 
-        return null;
+        return nullmoji;
+    }
+
+    public Pixmoji getPixmoji(char unicodeChar) {
+
+        for(Pixmoji pixmoji : pixmojiList) {
+            if (unicodeChar == pixmoji.getUnicodeChar()) {
+                return pixmoji;
+            }
+        }
+
+        return nullmoji;
+    }
+
+    public Pixmoji getRandom() {
+        Random random = new Random();
+        int index = random.nextInt(pixmojiList.size());
+
+        return pixmojiList.get(index);
     }
 
     public boolean isInList(String name) {

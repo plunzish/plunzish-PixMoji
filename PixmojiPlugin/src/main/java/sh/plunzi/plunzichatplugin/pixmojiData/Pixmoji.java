@@ -17,6 +17,10 @@ public class Pixmoji {
         return unicodeChar;
     }
 
+    public boolean exists(Pixmojis pixmojis) {
+        return pixmojis.isInList(unicodeChar);
+    }
+
     public void setName(String name) {
         this.name = name;
     }
