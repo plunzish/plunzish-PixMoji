@@ -2,7 +2,7 @@
 	"providers": [
 		{
 			"type": "bitmap",
-			"file": "plunzish:font/pixmojis.png",
+			"file": "plunzish:font/pixmojis1.png",
 			"ascent": 8,
 			"height": 24,
 			"chars": [
@@ -18,7 +18,7 @@
 		},
 		{
 			"type": "bitmap",
-			"file": "plunzish:font/pixmojis.png",
+			"file": "plunzish:font/pixmojis2.png",
 			"ascent": 8,
 			"height": 24,
 			"chars": [
