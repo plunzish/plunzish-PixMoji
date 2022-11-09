@@ -2,7 +2,7 @@
 	"providers": [
 		{
 			"type": "bitmap",
-			"file": "plunzish:font/pixmojis.png",
+			"file": "plunzish:font/pixmojis1.png",
 			"ascent": 8,
 			"chars": [
 							 "\uE001\uE002\uE003\uE004\uE005\uE006\uE007\uE008",
@@ -11,6 +11,21 @@
 							 "\uE026\uE027\uE028\uE029\uE030\uE031\uE032\uE033",
 							 "\uE034\uE035\uE036\uE037\uE038\uE039\uE040\uE041",
 							 "\uE042\uE043\uE044\uE045\uE046\uE047\uE048\uE049",
+							 "\uE050\uE051\uE000\uE000\uE000\uE000\uE000\uE000",
+							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000"
+			]
+		},
+		{
+			"type": "bitmap",
+			"file": "plunzish:font/pixmojis2.png",
+			"ascent": 8,
+			"chars": [
+							 "\uF001\uF002\uF003\uF004\uF005\uF006\uF007\uF008",
+							 "\uF009\uF010\uF012\uE000\uE000\uE000\uE000\uE000",
+							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000",
+							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000",
+							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000",
+							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000",
 							 "\uE050\uE051\uE000\uE000\uE000\uE000\uE000\uE000",
 							 "\uE000\uE000\uE000\uE000\uE000\uE000\uE000\uE000"
 			]
