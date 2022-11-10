@@ -16,6 +16,7 @@ D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatp
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\FriendsCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\OpCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\SetCensorlevelCommand.java
+D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\ColorTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\utils\OtherUtils.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\utils\FileManager.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\PrivateMessageTabCompletion.java
@@ -23,6 +24,7 @@ D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatp
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\NoTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\tabCompletion\SetCensorTabCompletion.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\chatSending\messages\MessageType.java
+D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\commands\ColorCommand.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\listeners\ChatListener.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\party\PartySystem.java
 D:\java-projects\PlunziPixmoji\PixmojiPlugin\src\main\java\sh\plunzi\plunzichatplugin\pixmojiData\Pixmojis.java

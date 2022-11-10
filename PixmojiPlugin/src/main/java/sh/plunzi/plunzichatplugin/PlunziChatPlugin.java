@@ -31,15 +31,15 @@ public final class PlunziChatPlugin extends JavaPlugin {
     public static OtherUtils UTILS;
     public static PlunziChatPlugin INSTANCE;
     public static PartySystem PARTYSYSTEM;
-    public static String PLUNZISH_NAMESPACE = "plunzish";
+    public static String PIXMOJI_NAMESPACE = "pixmoji";
     public static UUID CONSOLE_UUID = UUID.fromString("00000000-0000-0000-0000-000000000000");
 
     public static Component PREFIX;
 
-    public static final Key PIXMOJI_FONT = Key.key(PLUNZISH_NAMESPACE, "pixmojis");
-    public static final Key PIXMOJI_FONT_LARGE = Key.key(PLUNZISH_NAMESPACE, "pixmojis_large");
-    public static final Key PIXMOJI_FONT_TRANSPARENT = Key.key(PLUNZISH_NAMESPACE, "transparent");
-    public static final Key CHAT_PING_SOUND = Key.key(PlunziChatPlugin.PLUNZISH_NAMESPACE, "chat.ping");
+    public static final Key PIXMOJI_FONT = Key.key(PIXMOJI_NAMESPACE, "pixmojis");
+    public static final Key PIXMOJI_FONT_LARGE = Key.key(PIXMOJI_NAMESPACE, "pixmojis_large");
+    public static final Key PIXMOJI_FONT_TRANSPARENT = Key.key(PIXMOJI_NAMESPACE, "transparent");
+    public static final Key CHAT_PING_SOUND = Key.key(PlunziChatPlugin.PIXMOJI_NAMESPACE, "chat.ping");
 
     @Override
     public void onEnable() {

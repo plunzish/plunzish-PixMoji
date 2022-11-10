@@ -3,10 +3,12 @@ package sh.plunzi.plunzichatplugin.pixmojiData;
 public class Pixmoji {
     private String name;
     private char unicodeChar;
+    private final String emoji;
 
-    Pixmoji(String name, char unicodeChar) {
+    Pixmoji(String name, char unicodeChar, String emoji) {
         this.name = name;
         this.unicodeChar = unicodeChar;
+        this.emoji = emoji;
     }
 
     public String getName() {
@@ -15,6 +17,10 @@ public class Pixmoji {
 
     public char getUnicodeChar() {
         return unicodeChar;
+    }
+
+    public String getEmoji() {
+        return emoji;
     }
 
     public boolean exists(Pixmojis pixmojis) {

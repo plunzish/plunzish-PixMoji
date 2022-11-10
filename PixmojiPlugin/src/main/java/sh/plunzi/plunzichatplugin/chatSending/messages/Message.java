@@ -13,6 +13,7 @@ import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.intellij.lang.annotations.RegExp;
 import sh.plunzi.plunzichatplugin.PlunziChatPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.Debug;
@@ -60,6 +61,7 @@ public class Message {
         messageComponent = messageComponent.append(Component.text(message));
 
         messageComponent = handlePixmojis(messageComponent);
+        messageComponent = handleFormatting(messageComponent);
         messageComponent = handleAts(messageComponent);
 
         message = PlainTextComponentSerializer.plainText().serialize(messageComponent);
@@ -76,8 +78,11 @@ public class Message {
                     .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_TRANSPARENT).build()); //make space                         //[formattedInvis][Emoji]
                                                                                                                                         //
                                                                                                                                         //
-            messageComponent = messageComponent.append(Component.text(pixmoji.getUnicodeChar() + "\n")
-                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build())); //add Emoji                               //[formattedInvis][Emoji]
+            messageComponent = messageComponent.append(
+                    Component.text(" ").style(Style.style().font(Key.key(Key.MINECRAFT_NAMESPACE, "default")).build())
+                    .append(
+                    Component.text(pixmoji.getUnicodeChar() + "\n")
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build())));//add Emoji                               //[formattedInvis][Emoji]
                                                                                                                                         //                IIIIIII <- The Emoji is overlapping into the other rows
                                                                                                                                         //                IIIIIII
             messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType) + "\n" )
@@ -128,15 +133,16 @@ public class Message {
 
         while (matcher.find()) {
 
-            Debug.send(matcher.group(0) + " 1");
+            Player player = Bukkit.getServer().getPlayerExact(matcher.group(1));
 
-            if(Bukkit.getServer().getPlayerExact(matcher.group(1)) != null || matcher.group(1).equals("r-")) {
+            if(player != null || matcher.group(1).equals("r-")) {
 
                 Debug.send(matcher.group(1) + " 2");
 
-                Object[] players = Bukkit.getOnlinePlayers().toArray();
+                if(player== null && matcher.group(0).equals("@r-")) player = PlunziChatPlugin.UTILS.getRandomPlayer();
 
-                @RegExp String replacement = matcher.group(0).replace("@r-","@" + PlunziChatPlugin.UTILS.getRandomPlayer().getName());
+                assert player != null;
+                @RegExp String replacement = "@" + player.getName();
 
                 String magic = matcher.group(0);
 
@@ -155,72 +161,109 @@ public class Message {
     }
 
     private TextComponent handleFormatting(TextComponent inputTextComponent) {
-    /*
-        String input = PlainTextComponentSerializer.plainText().serialize(inputTextComponent);
 
-        List<PixmojiFormatting> formatList = new ArrayList<>();
+        String patternBoldItalic =       "\\*{3}([^*\\n]+?)\\*{3}";
+        String patternUnderlinedItalic = "_{3}([^*\\n]+?)_{3}";
+        String patternBold =             "\\*\\*([^*\\n]+?)\\*\\*";
+        String patternUnderlined =       "__([^*\\n]+?)__";
+        String patternItalic =           "_([^*\\n]+?)_|\\*([^*\\n]+?)\\*";
 
-        @RegExp String patternItalic =        "([*_]([^_*]+?)[*_])[^*_]";
-        @RegExp String patternBold =          "(\\*{2}([^_*]+?)\\*{2})[^*]";
-        @RegExp String patternUnderlined =    "(_{2}([^_*]+?)_{2})[^_]";
-        @RegExp String patternStrikethrough = "(~{2}([^_*]+?)~{2})[^~]";
-        @RegExp String patternObfuscated =    "(~{3}([^_*]+?)~{3})[^~]";
-        formatList.add(new PixmojiFormatting(patternBold, TextDecoration.BOLD));
-        formatList.add(new PixmojiFormatting(patternUnderlined, TextDecoration.UNDERLINED));
-        formatList.add(new PixmojiFormatting(patternItalic, TextDecoration.ITALIC));
-        formatList.add(new PixmojiFormatting(patternStrikethrough, TextDecoration.STRIKETHROUGH));
-        formatList.add(new PixmojiFormatting(patternObfuscated, TextDecoration.OBFUSCATED));
+        String[] patterns = new String[]{
+                patternBoldItalic,
+                patternUnderlinedItalic,
+                patternBold,
+                patternUnderlined,
+                patternItalic
+        };
 
-        for(PixmojiFormatting format : formatList) {
-            Pattern formattingPattern = Pattern.compile(format.pattern);
-            Matcher matcher = formattingPattern.matcher(input);
+        TextComponent textComponent = inputTextComponent;
 
+        for (int i = 0; i < 5; i++) {
+
+            String text = PlainTextComponentSerializer.plainText().serialize(textComponent);
+
+            Pattern pattern = Pattern.compile(patterns[i]);
+            Matcher matcher = pattern.matcher(text);
+
+            TextDecoration[] textDecorations = null;
+
+            switch (i) {
+                case 0:
+                    textDecorations = new TextDecoration[]
+                            {TextDecoration.BOLD, TextDecoration.ITALIC};
+                    break;
+                case 1:
+                    textDecorations = new TextDecoration[]
+                            {TextDecoration.UNDERLINED, TextDecoration.ITALIC};
+                    break;
+                case 2:
+                    textDecorations = new TextDecoration[]
+                            {TextDecoration.BOLD};
+                    break;
+                case 3:
+                    textDecorations = new TextDecoration[]
+                            {TextDecoration.UNDERLINED};
+                    break;
+                case 4:
+                    textDecorations = new TextDecoration[]
+                            {TextDecoration.ITALIC};
+                    break;
+            }
+
+            Debug.send(i + " " + textDecorations + " " + pattern);
+            Debug.send("Textbefore: <" + text + ">");
+
+            Style style = Style.style()
+                    .decoration(textDecorations[0], true)
+                    .build();
+
+            if(i < 2) {
+                style = Style.style()
+                        .decoration(textDecorations[0], true)
+                        .decoration(textDecorations[1], true)
+                        .build();
+            }
+
+            Debug.send("Operation <");
             while (matcher.find()) {
-                @RegExp String string = matcher.group(1);
-                String rawString = matcher.group(2);
 
-                String nonRegexString = string;
-                {
-                nonRegexString  = nonRegexString.replace("[", "\\[")
-                        .replace("]", "\\]")
-                        .replace(".", "\\.")
-                        .replace("§", "\\§")
-                        .replace("{", "\\{")
-                        .replace("}", "\\}")
-                        .replace("*", "\\*")
-                        .replace("(", "\\(")
-                        .replace(")", "\\)")
-                        .replace("\\", "\\\\")
-                        .replace("+", "\\+")
-                        .replace("|", "\\|")
-                        .replace("?", "\\?")
-                        .replace("<", "\\<")
-                        .replace(">", "\\>");}
+                @RegExp String match = matcher.group(0);
 
-                inputTextComponent = (TextComponent) inputTextComponent.replaceText(TextReplacementConfig.builder()
-                        .match(nonRegexString).replacement(
-                                Component.text(rawString).style(
-                                        Style.style()
-                                                .decoration(format.textDecoration, true)
-                                                .build()
+                Debug.send("\n" + matcher.group(0) + "|||" + (matcher.group(1) == null ? matcher.group(2) : matcher.group(1)) + "\n" + pattern + "\n");
+
+                textComponent = (TextComponent) textComponent.replaceText(TextReplacementConfig.builder()
+                        .matchLiteral(match).replacement(
+                                Component.text((matcher.group(1) == null ? matcher.group(2) : matcher.group(1))).style(
+                                        style
                                 )
                         ).build());
             }
-        }*///TODO
+            Debug.send(">");
+            text = PlainTextComponentSerializer.plainText().serialize(textComponent);
+            Debug.send("Textafter: <" + text + ">");
+        }
 
-        return inputTextComponent;
+        return textComponent;
     }
+
 
     private TextComponent handlePixmojis(TextComponent inputTextComponent) {
 
-        String input = PlainTextComponentSerializer.plainText().serialize(inputTextComponent);
         StringBuilder patternBuilder = new StringBuilder(":(");
 
         for(Pixmoji pixmoji : PlunziChatPlugin.PIXMOJIS.pixmojiList) {
             patternBuilder.append(pixmoji.getName()).append("|");
+
+            if(pixmoji.getEmoji() != null) {
+                inputTextComponent = (TextComponent) inputTextComponent.replaceText(TextReplacementConfig.builder()
+                        .matchLiteral(pixmoji.getEmoji())
+                        .replacement(Component.text(":" + pixmoji.getName() + ":")).build());
+            }
         }
         patternBuilder = new StringBuilder(patternBuilder.substring(0, patternBuilder.length() - 1));
         patternBuilder.append("):");
+
+        String input = PlainTextComponentSerializer.plainText().serialize(inputTextComponent);
 
         Pattern emojiPattern = Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE);
         Matcher matcher = emojiPattern.matcher(input);
@@ -323,15 +366,5 @@ public class Message {
 
     public MessageType getType() {
         return messageType;
-    }
-}
-
-class PixmojiFormatting {
-    public String pattern;
-    public TextDecoration textDecoration;
-
-    PixmojiFormatting(String pattern, TextDecoration textDecoration) {
-        this.pattern = pattern;
-        this.textDecoration = textDecoration;
     }
 }
