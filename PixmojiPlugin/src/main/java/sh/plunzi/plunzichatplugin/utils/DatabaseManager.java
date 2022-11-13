@@ -29,7 +29,7 @@ public class DatabaseManager {
     public Censorship getCensorLevel(UUID player) {
         int censorLevel = 2;
 
-        String sqlGetCensorLevel = "SELECT * FROM minecraftdb.players WHERE uuid = '" + player.toString() + "'";
+        String sqlGetCensorLevel = "SELECT * FROM minecraftdb.players WHERE uuid = '" + player.toString() + "';";
 
         try (PreparedStatement prepareStatement = conn.prepareStatement(sqlGetCensorLevel);
              ResultSet resultSet = prepareStatement.executeQuery()) {
@@ -92,9 +92,9 @@ public class DatabaseManager {
     public void createPlayerEntry(UUID player, Censorship censorLevel, boolean isAdmin, int playerscore, String friends) {
 
         String sqlUpdateCensorLevel =
-                "INSERT INTO `minecraftdb`.`players` " +
-                        "(`uuid`, `censor_level`, `is_admin`, `playerscore`, `friends`) " +
-                        "VALUES ('" + player + "', '" + censorshipToInt(censorLevel) + "', '" + (isAdmin?1:0) + "', '" + playerscore + "', '" + friends + "');\n";
+                "INSERT INTO minecraftdb.players " +
+                        "(uuid, censor_level, is_admin, playerscore, friends) " +
+                        "VALUES ('" + player + "', '" + censorshipToInt(censorLevel) + "', '" + (isAdmin?1:0) + "', '" + playerscore + "', '" + friends + "');";
 
         try {
 
@@ -111,7 +111,7 @@ public class DatabaseManager {
 
         List<OfflinePlayer> admins = new ArrayList<>();
 
-        String sqlSelectAllAdmins = "SELECT * FROM minecraftdb.players WHERE is_admin = 1";
+        String sqlSelectAllAdmins = "SELECT * FROM minecraftdb.players WHERE is_admin = 1;";
 
 
         try (PreparedStatement ps = conn.prepareStatement(sqlSelectAllAdmins);
@@ -130,7 +130,7 @@ public class DatabaseManager {
 
     public void deletePlayer(UUID player) {
         String sqlDeletePlayer =
-                "DELETE FROM `minecraftdb`.`players` WHERE `uuid` = '" + player + "';";
+                "DELETE FROM minecraftdb.players WHERE uuid = '" + player + "';";
 
         try {
             PreparedStatement prepareStatement = conn.prepareStatement(sqlDeletePlayer);
@@ -291,7 +291,7 @@ public class DatabaseManager {
 
     private UUID inIdToUUID(int inId) {
         String sqlGetPlayer =
-                "select uuid from minecraftdb.players where " +
+                    "SELECT uuid FROM minecraftdb.players WHERE " +
                         "internal_id='" + inId + "';";
 
         try {
@@ -308,7 +308,7 @@ public class DatabaseManager {
     }
     private int UUIDToInId(UUID uuid) {
         String sqlGetPlayer =
-                "select internal_id from minecraftdb.players where " +
+                "SELECT internal_id FROM minecraftdb.players WHERE " +
                         "uuid='" + uuid + "';";
 
         try {
