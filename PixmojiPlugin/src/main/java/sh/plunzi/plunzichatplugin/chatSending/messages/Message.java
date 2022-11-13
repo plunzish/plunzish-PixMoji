@@ -9,7 +9,6 @@ import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
@@ -49,16 +48,20 @@ public class Message {
         this.messageType = messageType;
 
         this.player1 = author;
-
         this.player2 = receiver;
     }
+
+    TextColor textColor = PlunziChatPlugin.FILE_MANAGER.getTextColor();
+    TextColor mentionColor = PlunziChatPlugin.FILE_MANAGER.getMentionColor();
 
     public TextComponent stringToComponent(String string, String authorName, Censorship censorLevel, MessageType messageType) {
         String message = censorString(string, censorLevel);
 
-        TextComponent messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType))
-                .hoverEvent(HoverEvent.showText(Component.text("(All Messages can be seen by console)")));
-        messageComponent = messageComponent.append(Component.text(message));
+        TextComponent messageComponent = Component.text(getPlayerNameFormatted(authorName, messageType));
+
+        messageComponent = messageComponent.append(
+                Component.text(message)
+        .style(Style.style().color(textColor).build()));
 
         messageComponent = handlePixmojis(messageComponent);
         messageComponent = handleFormatting(messageComponent);
@@ -82,7 +85,9 @@ public class Message {
                     Component.text(" ").style(Style.style().font(Key.key(Key.MINECRAFT_NAMESPACE, "default")).build())
                     .append(
                     Component.text(pixmoji.getUnicodeChar() + "\n")
-                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build())));//add Emoji                               //[formattedInvis][Emoji]
+                    .style(Style.style().font(PlunziChatPlugin.PIXMOJI_FONT_LARGE).build())
+                            .hoverEvent(HoverEvent.showText(Component.text(":" + pixmoji.getName() + ":")))));
+                                                                                              //add Emoji                               //[formattedInvis][Emoji]
                                                                                                                                         //                IIIIIII <- The Emoji is overlapping into the other rows
                                                                                                                                         //                IIIIIII
             messageComponent = messageComponent.append(Component.text(getPlayerNameFormatted(authorName, messageType) + "\n" )
@@ -123,6 +128,7 @@ public class Message {
         return playerNameFormatted.replace("%s", playerName);
     }
 
+    private final Player randomPlayer = PlunziChatPlugin.UTILS.getRandomPlayer();
     private TextComponent handleAts(TextComponent inputTextComponent) {
 
         String input = PlainTextComponentSerializer.plainText().serialize(inputTextComponent);
@@ -139,19 +145,18 @@ public class Message {
 
                 Debug.send(matcher.group(1) + " 2");
 
-                if(player== null && matcher.group(0).equals("@r-")) player = PlunziChatPlugin.UTILS.getRandomPlayer();
+                if(player== null && matcher.group(0).equals("@r-")) player = randomPlayer;
 
                 assert player != null;
                 @RegExp String replacement = "@" + player.getName();
 
-                String magic = matcher.group(0);
+                @RegExp String magic = matcher.group(0);
 
                 inputTextComponent = (TextComponent) inputTextComponent.replaceText(TextReplacementConfig.builder()
                         .match(magic).replacement(
                                 Component.text(replacement).style(
                                         Style.style()
-                                                .color(TextColor.color(HSVLike.fromRGB(162, 224, 254)))
-                                                .decoration(TextDecoration.BOLD, true)
+                                                .color(mentionColor)
                                                 .build()
                                 )
                         ).build());
@@ -210,21 +215,19 @@ public class Message {
                     break;
             }
 
-            Debug.send(i + " " + textDecorations + " " + pattern);
-            Debug.send("Textbefore: <" + text + ">");
-
             Style style = Style.style()
                     .decoration(textDecorations[0], true)
+                    .color(textColor)
                     .build();
 
             if(i < 2) {
                 style = Style.style()
                         .decoration(textDecorations[0], true)
                         .decoration(textDecorations[1], true)
+                        .color(textColor)
                         .build();
             }
 
-            Debug.send("Operation <");
             while (matcher.find()) {
 
                 @RegExp String match = matcher.group(0);
@@ -233,14 +236,10 @@ public class Message {
 
                 textComponent = (TextComponent) textComponent.replaceText(TextReplacementConfig.builder()
                         .matchLiteral(match).replacement(
-                                Component.text((matcher.group(1) == null ? matcher.group(2) : matcher.group(1))).style(
-                                        style
-                                )
+                                Component.text((matcher.group(1) == null ? matcher.group(2) : matcher.group(1))).style(style)
+
                         ).build());
             }
-            Debug.send(">");
-            text = PlainTextComponentSerializer.plainText().serialize(textComponent);
-            Debug.send("Textafter: <" + text + ">");
         }
 
         return textComponent;
@@ -269,14 +268,15 @@ public class Message {
         Matcher matcher = emojiPattern.matcher(input);
 
         while (matcher.find()) {
-            @RegExp String pixmoji = matcher.group(0);
+            @RegExp String pixmojiString = matcher.group(0);
+            Pixmoji pixmoji = PlunziChatPlugin.PIXMOJIS.getPixmoji(pixmojiString.replace(":", ""));
             inputTextComponent = (TextComponent) inputTextComponent.replaceText(TextReplacementConfig.builder()
-                    .match(pixmoji).replacement(
-                            Component.text(PlunziChatPlugin.PIXMOJIS.getPixmoji(pixmoji.replace(":", "")).getUnicodeChar()).style(
+                    .match(pixmojiString).replacement(
+                            Component.text(pixmoji.getUnicodeChar()).style(
                                     Style.style()
                                             .font(PlunziChatPlugin.PIXMOJI_FONT)
                                             .build()
-                            )
+                            ).hoverEvent(HoverEvent.showText(Component.text(":" + pixmoji.getName() + ":")))
                     ).build());
         }
 

@@ -2,8 +2,14 @@ package sh.plunzi.plunzichatplugin.chatSending;
 
 import net.kyori.adventure.sound.Sound;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.TextReplacementConfig;
+import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -15,6 +21,7 @@ import sh.plunzi.plunzichatplugin.chatSending.messages.MessageType;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 
 public class ChatHandler {
@@ -55,13 +62,32 @@ public class ChatHandler {
     }
 
     private void displayMessage(CommandSender sender, Message message, boolean consoleCanSee) {
+
         if(sender instanceof Player) {
             Player player = (Player) sender;
-            player.sendMessage(message.getContent(PlunziChatPlugin.DATABASE_MANAGER.getCensorLevel(player.getUniqueId())));
+
+            Component messageContent = message.getContent(PlunziChatPlugin.DATABASE_MANAGER.getCensorLevel(player.getUniqueId()));
             if(message.getRawContent().contains("@" + player.getName())) {
+
+                Debug.send("Message: [" + message.getRawContent() + "] contains " + "@" + player.getName());
+
                 Sound sound = Sound.sound(PlunziChatPlugin.CHAT_PING_SOUND, Sound.Source.VOICE, 100, 1);
+
+                messageContent = messageContent.replaceText(TextReplacementConfig.builder()
+                        .match(Pattern.quote("@" + player.getName())).replacement(
+                                Component.text("@" + player.getName()).style(
+                                        Style.style()
+                                                .color(PlunziChatPlugin.FILE_MANAGER.getPingColor())
+                                                .decoration(TextDecoration.BOLD, true)
+                                                .build()
+                                )
+                        ).build());
                 player.playSound(sound);
+            } else {
+                Debug.send("Message: [" + message.getRawContent() + "] does not contain " + "@" + player.getName());
             }
+
+            player.sendMessage(messageContent);
             return;
         }
         if(consoleCanSee) {
@@ -103,4 +129,3 @@ public class ChatHandler {
         sendCommandFeedback(Component.text(text), error, sender);
     }
 }
-

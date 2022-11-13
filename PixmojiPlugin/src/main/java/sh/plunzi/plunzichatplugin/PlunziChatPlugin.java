@@ -7,6 +7,7 @@ import org.bukkit.Color;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.plunzi.plunzichatplugin.chatSending.ChatHandler;
+import sh.plunzi.plunzichatplugin.chatSending.Debug;
 import sh.plunzi.plunzichatplugin.commands.*;
 import sh.plunzi.plunzichatplugin.commands.tabCompletion.*;
 import sh.plunzi.plunzichatplugin.party.PartySystem;
@@ -45,32 +46,31 @@ public final class PlunziChatPlugin extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
 
-        register();
+        try {
+            register();
+        } catch (Exception e) {
+            Debug.throwException(e);
+            Bukkit.getConsoleSender().sendMessage("\u00a7cPixmoji plugin encountered error when loading");
+            return;
+        }
         Bukkit.getConsoleSender().sendMessage("\u00a76Pixmoji Plugin loaded \u00a7a:" + PIXMOJIS.getRandom().getName() + ":");
 
         this.getServer().getLogger().setFilter(new MessageFilter());
 
-        PREFIX = UTILS.buildComponent("[Plunzish]", Color.fromRGB(0xffc400), Color.fromRGB(0xae00d9));
+        PREFIX = UTILS.buildComponent("[Pixmoji]", Color.fromRGB(0xffc400), Color.fromRGB(0xae00d9));
         PREFIX = PREFIX.append(Component.text(" ").color(TextColor.color(0x666666)));
     }
 
 
     //THE LIST OF WHAT I NEED TO DO
     //
-    //TODO Database <-
-    //
-    //TODO Friend system    <-
-    // - block
-    //
-    //TODO Partysystem <-
-    // - Partychat
     //TODO Formatting
 
 
-    private void register() {
+    private void register() throws NullPointerException {
         FILE_MANAGER = new FileManager();
-        PIXMOJIS = new Pixmojis();
         CHAT_HANDLER = new ChatHandler();
+        PIXMOJIS = new Pixmojis();
         DATABASE_MANAGER = new DatabaseManager();
         UTILS = new OtherUtils();
         PARTYSYSTEM = new PartySystem();

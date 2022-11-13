@@ -29,7 +29,6 @@ sh\plunzi\plunzichatplugin\party\PartySystem.class
 sh\plunzi\plunzichatplugin\commands\ResponseCommand.class
 sh\plunzi\plunzichatplugin\chatSending\ChatHandler.class
 sh\plunzi\plunzichatplugin\chatSending\messages\Message.class
-sh\plunzi\plunzichatplugin\chatSending\messages\PixmojiFormatting.class
 sh\plunzi\plunzichatplugin\commands\DeopCommand.class
 sh\plunzi\plunzichatplugin\chatSending\messages\Message$1.class
 sh\plunzi\plunzichatplugin\commands\ClearDataCommand.class

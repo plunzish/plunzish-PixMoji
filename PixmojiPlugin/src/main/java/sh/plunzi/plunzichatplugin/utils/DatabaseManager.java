@@ -15,7 +15,7 @@ public class DatabaseManager {
     private final FileManager fileManager = PlunziChatPlugin.FILE_MANAGER;
     private final String username = fileManager.getDatabaseUsername();
     private final String password = fileManager.getDatabasePassword();
-    private final String connectionUrl = "jdbc:mysql://localhost:3306/";
+    private final String connectionUrl = fileManager.getDatabaseConnectionUrl();
     Connection conn = null;
 
     public DatabaseManager() {
@@ -79,7 +79,7 @@ public class DatabaseManager {
         try {
             PreparedStatement prepareStatement = conn.prepareStatement(sqlGetPlayer);
             ResultSet resultSet = prepareStatement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 return resultSet.getInt("is_real") == 1;
             }
             return false;
@@ -89,7 +89,7 @@ public class DatabaseManager {
         }
     }
 
-    public boolean createPlayerEntry(UUID player, Censorship censorLevel, boolean isAdmin, int playerscore, String friends) {
+    public void createPlayerEntry(UUID player, Censorship censorLevel, boolean isAdmin, int playerscore, String friends) {
 
         String sqlUpdateCensorLevel =
                 "INSERT INTO `minecraftdb`.`players` " +
@@ -103,10 +103,8 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
         }
 
-        return true;
     }
 
     public List<OfflinePlayer> getAdmins() {
@@ -130,7 +128,7 @@ public class DatabaseManager {
         return admins;
     }
 
-    public boolean deletePlayer(UUID player) {
+    public void deletePlayer(UUID player) {
         String sqlDeletePlayer =
                 "DELETE FROM `minecraftdb`.`players` WHERE `uuid` = '" + player + "';";
 
@@ -139,9 +137,7 @@ public class DatabaseManager {
             prepareStatement.execute();
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
         }
-        return true;
     }
 
     public boolean isPlayerAdmin(UUID player) {
@@ -152,7 +148,7 @@ public class DatabaseManager {
         try {
             PreparedStatement prepareStatement = conn.prepareStatement(sqlGetPlayer);
             ResultSet resultSet = prepareStatement.executeQuery();
-            while (resultSet.next()) {
+            if (resultSet.next()) {
                 return resultSet.getInt("is_admin") == 1;
             }
             return false;
@@ -162,7 +158,7 @@ public class DatabaseManager {
         }
     }
 
-    public boolean setAdmin(UUID player, boolean isAdmin) {
+    public void setAdmin(UUID player, boolean isAdmin) {
 
         String sqlUpdateCensorLevel =
                 "UPDATE minecraftdb.players " +
@@ -175,9 +171,7 @@ public class DatabaseManager {
 
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
         }
-        return true;
     }
 
     private String getFriendsAsString(UUID player) {
@@ -227,7 +221,7 @@ public class DatabaseManager {
         return friends;
     }
 
-    public boolean addFriend(UUID player, UUID friend) {
+    public void addFriend(UUID player, UUID friend) {
 
         String currentFriendsAsInIds = getFriendsAsString(player);
 
@@ -247,12 +241,10 @@ public class DatabaseManager {
             prepareStatement.execute();
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
         }
-        return true;
     }
 
-    public boolean removeFriend(UUID player, UUID friend) {
+    public void removeFriend(UUID player, UUID friend) {
 
         String sqlGetFriends = "SELECT friends FROM minecraftdb.players WHERE uuid='" + player + "';";
 
@@ -266,7 +258,7 @@ public class DatabaseManager {
             }
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
+            return;
         }
         int friendAsInId = UUIDToInId(friend);
 
@@ -293,9 +285,7 @@ public class DatabaseManager {
             prepareStatement.execute();
         } catch (SQLException e) {
             Debug.throwException(e);
-            return false;
         }
-        return true;
     }
 
 

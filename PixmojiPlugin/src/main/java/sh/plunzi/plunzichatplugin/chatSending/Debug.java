@@ -29,12 +29,10 @@ public class Debug {
         send(message.toString(), null);
     }
 
-    public static void send(Exception exception, Player player) {
-        String message = "\u00a7c" + Arrays.toString(exception.getStackTrace()).replace(",", "\n");
-        send(message, player);
-    }
-    public static void send(Exception exception) {
-        send(exception, null);
+    public static void send(Exception e, Player player) {
+        StringWriter errors = new StringWriter();
+        e.printStackTrace(new PrintWriter(errors));
+        player.sendMessage("§c" + errors);
     }
 
     public static void throwException(Exception e) {
