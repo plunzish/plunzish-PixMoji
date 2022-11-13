@@ -7,7 +7,6 @@
 </h1>
 
 > Info: This project may, or may not be continued after all smiley emojis are finished.
-# **Plugin is still WIP**
 
 ### What is this?
 
@@ -16,7 +15,7 @@ This is a plugin for the free Pixel art emoji (Pixmoji) collection, the resource
 ### What variant do I use?
 Well right now no variant since there are none, but when it's finished there will be two variants of this plugin:
 
-  | Light version  | Public Server version  |
+  | Light version (Not up to date)  | Public Server version  |
   | :------------- | :-------------  |
   | adds pixmojis  | adds pixmojis   |
   | adds formatting| adds formatting |
@@ -37,7 +36,9 @@ _(more info for setting up database under Install)_
 
 ###### How to set up the database:
 1. make MySQL server
-1. creat schema `minecraftdb` and a table `players`
+1. create schema `minecraftdb` and the table `players`
+1. create these collumns: ![image](https://user-images.githubusercontent.com/63507330/201530436-5ead8188-3a39-41f9-9e4a-238d95f8ddd3.png)
+1. put the Database password into the config file and modify the port to the one of your database
 
 ## Committers and Contributors
 
