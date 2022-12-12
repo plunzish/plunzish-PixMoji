@@ -1,7 +1,7 @@
 # opensource-pixel-art-emoji-plugin
 
 <h1 align="center">
-  <img src="https://i.imgur.com/RhxDywI.png" width="340" height="131" style="border-radius: 50%;"/>
+  <img src="https://i.imgur.com/RhxDywI.png" width="340" height="131"/>
   <br/>
   Plugin for the pixmoji collection
 </h1>
