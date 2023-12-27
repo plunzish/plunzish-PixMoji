@@ -11,7 +11,7 @@
 ### What is this?
 
 This is a free to use pixel art emoji collection.
-Fell free to download your copy now.
+Feel free to download your copy now.
 
 ## Committers and Contributors
 
